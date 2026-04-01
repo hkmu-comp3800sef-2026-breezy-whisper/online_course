@@ -1,0 +1,69 @@
+plugins {
+	id 'java'
+	id 'war'
+	id 'org.springframework.boot' version '4.0.5'
+	id 'io.spring.dependency-management' version '1.1.7'
+	id "com.github.ben-manes.versions" version '0.53.0'
+	id "se.patrikerdes.use-latest-versions" version "0.2.19"
+}
+
+group = 'com.hkmu'
+version = '0.0.1'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(25)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// Spring Boot MVC (includes Spring Web, Spring MVC)
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// Spring Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// Spring Data JPA
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// H2 Database
+	runtimeOnly 'com.h2database:h2:2.4.240'
+
+	// JSP + JSTL (Jakarta EE)
+	implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.2'
+	implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
+
+	// Lombok (optional - reduces boilerplate)
+	compileOnly("org.projectlombok:lombok:1.18.44")
+	annotationProcessor("org.projectlombok:lombok:1.18.44")
+
+	testCompileOnly("org.projectlombok:lombok:1.18.44")
+	testAnnotationProcessor("org.projectlombok:lombok:1.18.44")
+
+	// Tomcat (provided runtime for WAR)
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+
+	// Test
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+tasks.named("dependencyUpdates").configure {
+    rejectVersionIf {
+        def version = it.candidate.version.toLowerCase()
+        def isNonStable = version.contains("alpha") || 
+                          version.contains("beta") || 
+                          version.contains("rc") || 
+                          version.matches(".*[.-]m\\d+.*") ||
+                          version.contains("snapshot")
+        return isNonStable
+    }
+}
