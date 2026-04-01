@@ -22,6 +22,7 @@ Online Course Website - a web application for course content delivery, student e
 | CSS Framework | **Tailwind CSS + Flowbite** (component library) |
 | Build Tool | Gradle |
 | File Compression | Zstandard (zstd) for Course Material BLOB storage |
+| Java Version | 25 |
 
 ### 1.3 Architecture Notes
 
@@ -29,33 +30,36 @@ Online Course Website - a web application for course content delivery, student e
 - **No REST API Endpoints:** This project does NOT expose REST APIs. All user interactions (voting, commenting, form submissions) use traditional JSP form submission with redirect pattern.
 - **TypeScript Scope:** TypeScript is used only for minimal client-side enhancements such as form input validation and Flowbite/Bootstrap UI interactions. It is NOT used for major application logic.
 - **Flowbite Components:** UI components from Flowbite (free, open-source) are used to build pages. Components can be used directly in JSP files.
+- **JPA Auto Schema:** Database tables are automatically created/updated by Hibernate based on `@Entity` classes (`ddl-auto: update`). No manual schema.sql needed.
 
 ---
 
-## 2. Data Model
+## 2. Data Model (JPA Entities)
+
+**Note:** Tables are automatically created by Hibernate JPA based on these `@Entity` classes. No manual `schema.sql` required.
 
 ### 2.1 Entity Relationship Diagram
 
 ```
 ┌─────────────┐     ┌─────────────┐     ┌──────────────────┐
-│    User     │     │   Lecture   │     │  Course_Material │
-│─────────────│     │─────────────│     │─────────────────│
-│ username PK│────<│ lecture_id  │────<│ material_id PK  │
-│ full_name   │     │ title       │     │ lecture_id FK   │
-│ email       │     │ summary     │     │ file_name       │
-│ phone_number│     │ created_at  │     │ file_extension  │
-│ password    │     │ updated_at  │     │ mime_type       │
-│ role        │     └─────────────┘     │ file_content BLOB│
-│ status      │                          │ file_size       │
-│ created_at  │     ┌─────────────┐     │ created_at      │
-│ updated_at  │     │    Poll     │     │ updated_at      │
+│    User     │     │   Lecture   │     │  Course_Material  │
+│─────────────│     │─────────────│     │──────────────────│
+│ username PK │────<│ lecture_id  │────<│ material_id PK   │
+│ fullName    │     │ title       │     │ lectureId FK     │
+│ email       │     │ summary     │     │ fileName         │
+│ phoneNumber │     │ createdAt   │     │ fileExtension    │
+│ password    │     │ updatedAt   │     │ mimeType         │
+│ role        │     └─────────────┘     │ fileContent BLOB │
+│ status      │                          │ fileSize        │
+│ createdAt   │     ┌─────────────┐     │ createdAt       │
+│ updatedAt    │     │    Poll     │     │ updatedAt       │
 └─────────────┘     │─────────────│     └──────────────────┘
-       │            │ poll_id PK  │
+       │            │ pollId PK   │
        │            │ question    │
-       │            │ option_1~5   │
-       │            │ close_time  │
-       │            │ created_at  │
-       │            │ updated_at  │
+       │            │ option1~5   │
+       │            │ closeTime   │
+       │            │ createdAt   │
+       │            │ updatedAt   │
        │            └─────────────┘
        │                  │
        │                  │
@@ -63,30 +67,57 @@ Online Course Website - a web application for course content delivery, student e
 ┌─────────────┐     ┌─────────────┐
 │    Vote     │     │   Comment   │
 │─────────────│     │─────────────│
-│ vote_id PK  │     │ comment_id PK│
-│ poll_id FK  │     │ username FK │
-│ username FK │────<│ target_id   │
-│ selected_opt│     │ target_type │
-│ created_at  │     │ content     │
-│ updated_at  │     │ created_at  │
-└─────────────┘     │ updated_at  │
+│ voteId PK   │     │ commentId PK│
+│ pollId FK   │     │ username FK │
+│ username FK │────<│ targetId    │
+│ selectedOpt │     │ targetType  │
+│ createdAt   │     │ content     │
+│ updatedAt   │     │ createdAt   │
+└─────────────┘     │ updatedAt   │
                      └─────────────┘
 ```
 
-### 2.2 User Table
+### 2.2 User Entity
 
-| Field | Type | Constraints | Description |
-|-------|------|-------------|-------------|
-| `username` | VARCHAR(50) | PRIMARY KEY | User login name (immutable) |
-| `full_name` | VARCHAR(100) | NOT NULL | User's full name |
-| `email` | VARCHAR(255) | NOT NULL | Email address |
-| `phone_number` | VARCHAR(8) | NOT NULL | 8-digit phone number |
-| `password` | VARCHAR(255) | NOT NULL | BCrypt encrypted password |
-| `role` | INT | NOT NULL, DEFAULT 0 | 0=student, 1=teacher |
-| `status` | INT | NOT NULL, DEFAULT 0 | 0=active, 1=pending, 2=disabled |
-| `disabled_reason` | VARCHAR(500) | NULLABLE | Reason for disabled status |
-| `created_at` | TIMESTAMP | @CreatedDate | Account creation time |
-| `updated_at` | TIMESTAMP | @LastModifiedDate | Last update time |
+```java
+@Entity
+@Table(name = "users")
+public class User {
+
+    @Id
+    @Column(name = "username", length = 50)
+    private String username;
+
+    @Column(name = "full_name", nullable = false, length = 100)
+    private String fullName;
+
+    @Column(nullable = false, length = 255)
+    private String email;
+
+    @Column(name = "phone_number", nullable = false, length = 8)
+    private String phoneNumber;
+
+    @Column(nullable = false, length = 255)
+    private String password;
+
+    @Column(nullable = false)
+    private Integer role = 0;  // 0=student, 1=teacher
+
+    @Column(nullable = false)
+    private Integer status = 0;  // 0=active, 1=pending, 2=disabled
+
+    @Column(name = "disabled_reason", length = 500)
+    private String disabledReason;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+}
+```
 
 **Status State Machine:**
 - **Active (0):** Full access based on role
@@ -97,80 +128,198 @@ Online Course Website - a web application for course content delivery, student e
 - Student registration → Automatically set to `active`
 - Teacher registration → Set to `pending`, requires another teacher to approve via User Management page
 
-### 2.3 Lecture Table
+### 2.3 Lecture Entity
 
-| Field | Type | Constraints | Description |
-|-------|------|-------------|-------------|
-| `lecture_id` | BIGINT | PRIMARY KEY, AUTO_INCREMENT | Unique lecture ID |
-| `title` | VARCHAR(255) | NOT NULL | Lecture title |
-| `summary` | TEXT | NOT NULL | Lecture summary/description |
-| `created_at` | TIMESTAMP | @CreatedDate | Creation time |
-| `updated_at` | TIMESTAMP | @LastModifiedDate | Last modification time |
+```java
+@Entity
+@Table(name = "lecture")
+public class Lecture {
 
-### 2.4 Course_Material Table
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "lecture_id")
+    private Long lectureId;
 
-| Field | Type | Constraints | Description |
-|-------|------|-------------|-------------|
-| `material_id` | BIGINT | PRIMARY KEY, AUTO_INCREMENT | Unique material ID |
-| `lecture_id` | BIGINT | FOREIGN KEY → Lecture | Associated lecture |
-| `file_name` | VARCHAR(255) | NOT NULL | Original filename (e.g., "week1_notes.pdf") |
-| `file_extension` | VARCHAR(10) | NOT NULL | File extension (e.g., ".pdf", ".txt") |
-| `mime_type` | VARCHAR(100) | NOT NULL | MIME type (e.g., "application/pdf") |
-| `file_content` | BLOB | NOT NULL | Zstd-compressed file content |
-| `file_size` | BIGINT | NOT NULL | Original file size in bytes (before compression) |
-| `created_at` | TIMESTAMP | @CreatedDate | Upload time |
-| `updated_at` | TIMESTAMP | @LastModifiedDate | Last modification time |
+    @Column(nullable = false, length = 255)
+    private String title;
+
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String summary;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+}
+```
+
+### 2.4 CourseMaterial Entity
+
+```java
+@Entity
+@Table(name = "course_material")
+public class CourseMaterial {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "material_id")
+    private Long materialId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lecture_id", nullable = false)
+    private Lecture lecture;
+
+    @Column(name = "file_name", nullable = false, length = 255)
+    private String fileName;
+
+    @Column(name = "file_extension", nullable = false, length = 10)
+    private String fileExtension;
+
+    @Column(name = "mime_type", nullable = false, length = 100)
+    private String mimeType;
+
+    @Lob
+    @Column(name = "file_content", nullable = false)
+    private byte[] fileContent;  // zstd compressed
+
+    @Column(name = "file_size", nullable = false)
+    private Long fileSize;  // original size before compression
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+}
+```
 
 **File Storage:**
 - Files are stored as BLOB in H2 database
 - Content is compressed using Zstandard (zstd) before storage
 - Decompression happens on download (server-side)
 
-### 2.5 Poll Table
+### 2.5 Poll Entity
 
-| Field | Type | Constraints | Description |
-|-------|------|-------------|-------------|
-| `poll_id` | BIGINT | PRIMARY KEY, AUTO_INCREMENT | Unique poll ID |
-| `question` | VARCHAR(500) | NOT NULL | Poll question text |
-| `option_1` | VARCHAR(255) | NOT NULL | First MC option |
-| `option_2` | VARCHAR(255) | NOT NULL | Second MC option |
-| `option_3` | VARCHAR(255) | NOT NULL | Third MC option |
-| `option_4` | VARCHAR(255) | NOT NULL | Fourth MC option |
-| `option_5` | VARCHAR(255) | NOT NULL | Fifth MC option |
-| `close_time` | BIGINT | NOT NULL, DEFAULT -1 | Unix timestamp when poll closes (-1 = never) |
-| `created_at` | TIMESTAMP | @CreatedDate | Creation time |
-| `updated_at` | TIMESTAMP | @LastModifiedDate | Last modification time |
+```java
+@Entity
+@Table(name = "poll")
+public class Poll {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "poll_id")
+    private Long pollId;
+
+    @Column(nullable = false, length = 500)
+    private String question;
+
+    @Column(name = "option_1", nullable = false, length = 255)
+    private String option1;
+
+    @Column(name = "option_2", nullable = false, length = 255)
+    private String option2;
+
+    @Column(name = "option_3", nullable = false, length = 255)
+    private String option3;
+
+    @Column(name = "option_4", nullable = false, length = 255)
+    private String option4;
+
+    @Column(name = "option_5", nullable = false, length = 255)
+    private String option5;
+
+    @Column(name = "close_time", nullable = false)
+    private Long closeTime = -1L;  // -1=never
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+}
+```
 
 **Constraints:**
-- Poll options (option_1~5) CANNOT be modified after poll creation
+- Poll options (option1~5) CANNOT be modified after poll creation
 - Only the entire poll can be deleted and recreated
 
-### 2.6 Vote Table
+### 2.6 Vote Entity
 
-| Field | Type | Constraints | Description |
-|-------|------|-------------|-------------|
-| `vote_id` | VARCHAR(36) | PRIMARY KEY | UUIDv7 for unique identification |
-| `poll_id` | BIGINT | FOREIGN KEY → Poll, NOT NULL | Associated poll |
-| `username` | VARCHAR(50) | FOREIGN KEY → User, NOT NULL | Voter |
-| `selected_option` | INT | NOT NULL, CHECK (1-5) | Selected option (1-5) |
-| `created_at` | TIMESTAMP | @CreatedDate | First vote time |
-| `updated_at` | TIMESTAMP | @LastModifiedDate | Last vote change time |
+```java
+@Entity
+@Table(name = "vote",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"poll_id", "username"}))
+public class Vote {
+
+    @Id
+    @Column(name = "vote_id", length = 36)
+    private String voteId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "poll_id", nullable = false)
+    private Poll poll;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "username", nullable = false)
+    private User user;
+
+    @Column(name = "selected_option", nullable = false)
+    private Integer selectedOption;  // 1-5
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+}
+```
 
 **Constraints:**
 - One vote per user per poll (enforced by unique constraint on poll_id + username)
 - Users can change their vote (UPDATE instead of INSERT)
 
-### 2.7 Comment Table
+### 2.7 Comment Entity
 
-| Field | Type | Constraints | Description |
-|-------|------|-------------|-------------|
-| `comment_id` | VARCHAR(36) | PRIMARY KEY | UUIDv7 for unique identification |
-| `username` | VARCHAR(50) | FOREIGN KEY → User, NOT NULL | Commenter |
-| `target_id` | BIGINT | NOT NULL | Target ID (lecture_id or poll_id) |
-| `target_type` | VARCHAR(20) | NOT NULL, CHECK ('LECTURE', 'POLL') | Type of target |
-| `content` | TEXT | NOT NULL | Comment content |
-| `created_at` | TIMESTAMP | @CreatedDate | Comment creation time |
-| `updated_at` | TIMESTAMP | @LastModifiedDate | Last edit time |
+```java
+@Entity
+@Table(name = "comment")
+public class Comment {
+
+    @Id
+    @Column(name = "comment_id", length = 36)
+    private String commentId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "username", nullable = false)
+    private User user;
+
+    @Column(name = "target_id", nullable = false)
+    private Long targetId;
+
+    @Column(name = "target_type", nullable = false, length = 20)
+    private String targetType;  // "LECTURE" or "POLL"
+
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String content;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+}
+```
 
 **Comment Ordering:** Implementation team decides (not specified in requirements)
 
@@ -220,7 +369,7 @@ Online Course Website - a web application for course content delivery, student e
 **Login:**
 - Username + password authentication
 - Spring Security with BCrypt password encoding
-- Role-based access control (ROLE_STUDENT, ROLE_TEACHER, ROLE_ADMIN)
+- Role-based access control (ROLE_STUDENT, ROLE_TEACHER)
 
 **User Management (Teacher only):**
 - View all users
@@ -256,12 +405,12 @@ For each poll:
 - Authenticated students/teachers can vote
 - One vote per user per poll
 - Users can change their vote
-- Poll may have `close_time` - if set and past, no new votes/changes allowed
+- Poll may have `closeTime` - if set and past, no new votes/changes allowed
 
 ### 4.5 Comment System
 
 - Both students and teachers can post comments
-- Comments linked to either Lecture or Poll (via target_id + target_type)
+- Comments linked to either Lecture or Poll (via targetId + targetType)
 - Comment history page shows all comments by the current user
 
 ### 4.6 Internationalization (i18n)
@@ -314,67 +463,126 @@ For each poll:
 
 ---
 
-## 7. Project Structure (Reference)
+## 7. Project Structure
 
 ```
-src/
-├── main/
-│   ├── java/com/course/
-│   │   ├── CourseApplication.java
-│   │   ├── config/
-│   │   │   ├── SecurityConfig.java
-│   │   │   └── WebMvcConfig.java
-│   │   ├── controller/
-│   │   │   ├── IndexController.java
-│   │   │   ├── AuthController.java
-│   │   │   ├── LectureController.java
-│   │   │   ├── PollController.java
-│   │   │   ├── CommentController.java
-│   │   │   └── AdminController.java
-│   │   ├── model/
-│   │   │   ├── User.java
-│   │   │   ├── Lecture.java
-│   │   │   ├── CourseMaterial.java
-│   │   │   ├── Poll.java
-│   │   │   ├── Vote.java
-│   │   │   └── Comment.java
-│   │   ├── repository/
-│   │   ├── service/
-│   │   ├── dto/
-│   │   └── exception/
-│   ├── resources/
-│   │   ├── application.properties
-│   │   ├── messages.properties
-│   │   ├── messages_zh_TW.properties
-│   │   └── schema.sql
-│   └── webapp/
-│       └── WEB-INF/
-│           └── jsp/
-│               ├── layout/
-│               │   └── base.jsp
-│               ├── index.jsp
-│               ├── login.jsp
-│               ├── register.jsp
-│               ├── lecture/
-│               │   ├── list.jsp
-│               │   ├── detail.jsp
-│               │   ├── create.jsp
-│               │   └── edit.jsp
-│               ├── poll/
-│               │   ├── list.jsp
-│               │   ├── detail.jsp
-│               │   └── create.jsp
-│               ├── user/
-│               │   ├── profile.jsp
-│               │   └── comments.jsp
-│               └── admin/
-│                   └── users.jsp
-├── frontend/
-│   ├── ts/
-│   │   ├── main.ts          # Minimal: form validation, basic UI
-│   │   └── i18n.ts          # Language switch helper (optional)
-│   └── compiled/            # Compiled JS output
-└── build.gradle
+gp/                                    # Project root
+├── build.gradle                      # Gradle build config (Spring Boot 4.0.5, Java 25)
+├── settings.gradle
+├── gradlew / gradlew.bat
+├── gradle/wrapper/
+│   └── gradle-wrapper.properties
+├── src/
+│   ├── main/
+│   │   ├── java/com/hkmu/online_course/
+│   │   │   ├── OnlineCourseApplication.java    # Main application class
+│   │   │   ├── ServletInitializer.java        # WAR deployment support
+│   │   │   ├── config/
+│   │   │   │   └── SecurityConfig.java        # Spring Security config (future)
+│   │   │   ├── model/                          # JPA Entities
+│   │   │   │   ├── User.java
+│   │   │   │   ├── Lecture.java
+│   │   │   │   ├── CourseMaterial.java
+│   │   │   │   ├── Poll.java
+│   │   │   │   ├── Vote.java
+│   │   │   │   └── Comment.java
+│   │   │   ├── repository/                     # Spring Data JPA Repositories
+│   │   │   │   ├── UserRepository.java
+│   │   │   │   ├── LectureRepository.java
+│   │   │   │   ├── CourseMaterialRepository.java
+│   │   │   │   ├── PollRepository.java
+│   │   │   │   ├── VoteRepository.java
+│   │   │   │   └── CommentRepository.java
+│   │   │   ├── controller/                     # Spring MVC Controllers
+│   │   │   │   ├── IndexController.java
+│   │   │   │   ├── AuthController.java
+│   │   │   │   ├── LectureController.java
+│   │   │   │   ├── PollController.java
+│   │   │   │   ├── CommentController.java
+│   │   │   │   └── AdminController.java
+│   │   │   ├── service/                       # Business logic services
+│   │   │   └── dto/                            # Data Transfer Objects
+│   │   ├── resources/
+│   │   │   └── application.yaml                # Spring Boot config (H2, JPA, JSP)
+│   │   └── webapp/
+│   │       └── WEB-INF/
+│   │           └── jsp/                        # JSP view files
+│   │               ├── layout/
+│   │               │   └── base.jsp
+│   │               ├── index.jsp
+│   │               ├── login.jsp
+│   │               ├── register.jsp
+│   │               ├── lecture/
+│   │               ├── poll/
+│   │               ├── user/
+│   │               └── admin/
+│   └── test/
+│       └── java/com/hkmu/online_course/
+│           └── OnlineCourseApplicationTests.java
+├── data/                                 # H2 database files (gitignored)
+├── docs/
+│   └── Technical Requirements Specification.md
+├── Database-Setup.md
+├── Requirement.md
+└── .gitignore
+```
+
+### 7.1 Key Configuration Files
+
+**application.yaml:**
+```yaml
+spring:
+  application:
+    name: online_course
+  datasource:
+    url: jdbc:h2:file:./data/courseDB;AUTO_RECONNECT=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: update    # Auto-create/update tables from @Entity
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+```
+
+**build.gradle (key dependencies):**
+```groovy
+plugins {
+    id 'java'
+    id 'war'
+    id 'org.springframework.boot' version '4.0.5'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'com.h2database:h2:2.4.240'
+    implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.2'
+    implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
+    compileOnly("org.projectlombok:lombok:1.18.44")
+    annotationProcessor("org.projectlombok:lombok:1.18.44")
+    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
 ```
 
 **Note on JSP Form Submission:**

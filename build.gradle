@@ -30,8 +30,20 @@ dependencies {
 	// Spring Data JPA
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
+	// Bean Validation (for @Pattern, @Size annotations)
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// QueryDSL for type-safe queries (Jakarta EE version)
+	implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
+	annotationProcessor 'com.querydsl:querydsl-apt:5.1.0:jakarta'
+	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+
 	// H2 Database
 	runtimeOnly 'com.h2database:h2:2.4.240'
+
+	// Zstandard compression for file storage
+	implementation 'com.github.luben:zstd-jni:1.5.6-3'
 
 	// JSP + JSTL (Jakarta EE)
 	implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.2'
@@ -59,9 +71,9 @@ tasks.named('test') {
 tasks.named("dependencyUpdates").configure {
     rejectVersionIf {
         def version = it.candidate.version.toLowerCase()
-        def isNonStable = version.contains("alpha") || 
-                          version.contains("beta") || 
-                          version.contains("rc") || 
+        def isNonStable = version.contains("alpha") ||
+                          version.contains("beta") ||
+                          version.contains("rc") ||
                           version.matches(".*[.-]m\\d+.*") ||
                           version.contains("snapshot")
         return isNonStable
