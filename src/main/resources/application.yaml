@@ -1,6 +1,6 @@
 spring:
   application:
-    name: online-course
+    name: online_course
 
   # H2 Database Configuration
   datasource:
