@@ -37,12 +37,12 @@ public class LectureController {
 
     // ========== Public/Authenticated User Endpoints ==========
 
-    @GetMapping("/list")
-    public String list(Model model) {
-        List<Lecture> lectures = lectureService.findAll();
-        model.addAttribute("lectures", lectures);
-        return "lecture/list";
-    }
+//    @GetMapping("/list")
+//    public String list(Model model) {
+//        List<Lecture> lectures = lectureService.findAll();
+//        model.addAttribute("lectures", lectures);
+//        return "lecture/list";
+//    }
 
     @GetMapping("/{lectureId}")
     public String view(@PathVariable Long lectureId, Model model) {

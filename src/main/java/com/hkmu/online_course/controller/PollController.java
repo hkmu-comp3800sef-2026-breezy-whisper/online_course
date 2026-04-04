@@ -42,12 +42,12 @@ public class PollController {
 
     // ========== Public/Authenticated User Endpoints ==========
 
-    @GetMapping("/list")
-    public String list(Model model) {
-        List<Poll> polls = pollService.findAll();
-        model.addAttribute("polls", polls);
-        return "poll/list";
-    }
+//    @GetMapping("/list")
+//    public String list(Model model) {
+//        List<Poll> polls = pollService.findAll();
+//        model.addAttribute("polls", polls);
+//        return "poll/list";
+//    }
 
     @GetMapping("/{pollId}")
     public String view(@PathVariable Long pollId,
@@ -57,8 +57,11 @@ public class PollController {
                 .orElseThrow(() -> new IllegalArgumentException("Poll not found: " + pollId));
 
         List<Vote> votes = voteService.findByPollId(pollId);
-        Map<Integer, Long> voteCounts = votes.stream()
-                .collect(Collectors.groupingBy(Vote::getSelectedOption, Collectors.counting()));
+        Map<String, Long> voteCounts = votes.stream()
+                .collect(Collectors.groupingBy(
+                        vote -> String.valueOf(vote.getSelectedOption()),
+                        Collectors.counting()
+                ));
 
         String userVote = null;
         if (userDetails != null) {
@@ -66,7 +69,6 @@ public class PollController {
                     .map(v -> String.valueOf(v.getSelectedOption()))
                     .orElse(null);
         }
-        System.out.println(voteCounts);
         model.addAttribute("poll", poll);
         model.addAttribute("voteCounts", voteCounts);
         model.addAttribute("userVote", userVote);

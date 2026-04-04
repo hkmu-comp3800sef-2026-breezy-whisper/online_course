@@ -10,7 +10,7 @@
 <t:layout title="lecture.view.title">
 
     <!-- Back Link -->
-    <a href="/lecture/list" class="inline-block mb-4 text-blue-600 hover:text-blue-800 font-medium">
+    <a href="/" class="inline-block mb-4 text-blue-600 hover:text-blue-800 font-medium">
         &larr; <fmt:message key="lecture.back" />
     </a>
 
