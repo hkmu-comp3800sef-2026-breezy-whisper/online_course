@@ -36,7 +36,7 @@
                 </div>
             </c:if>
 
-            <form action="/login" method="post" data-validate>
+            <form action="/perform-login" method="post" data-validate>
                 <!-- CSRF Token (Spring Security) -->
                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
 
