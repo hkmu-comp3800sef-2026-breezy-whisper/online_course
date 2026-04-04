@@ -3,6 +3,10 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 
+<fmt:setLocale value="${requestScope.springLocale}" />
+<fmt:setBundle basename="messages" />
+
+
 <t:layout title="login.title">
 
     <div class="max-w-md mx-auto">

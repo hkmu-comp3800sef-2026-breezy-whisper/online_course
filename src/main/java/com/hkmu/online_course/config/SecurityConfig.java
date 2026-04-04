@@ -1,6 +1,10 @@
 package com.hkmu.online_course.config;
 
-import com.hkmu.online_course.security.CustomUserDetailsService;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,10 +17,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+import com.hkmu.online_course.security.CustomUserDetailsService;
+
+import jakarta.servlet.DispatcherType;
 
 /**
  * Spring Security configuration.
@@ -78,39 +81,27 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                // Public pages - only these paths are globally permitted
-                .requestMatchers("/", "/login", "/register").permitAll()
-                .requestMatchers("/h2-console/**").permitAll()
+                .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
+                .requestMatchers("/", "/login", "/register", "/h2-console/**").permitAll()
                 .requestMatchers("/js/**", "/css/**", "/images/**").permitAll()
-                // All other requests require authentication
-                // Authorization is handled at method level via @PreAuthorize
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/login")
-                .loginProcessingUrl("/login")
+                .loginProcessingUrl("/perform-login")
                 .defaultSuccessUrl("/", true)
-                .failureUrl("/login?error")
                 .permitAll()
             )
-            .rememberMe(rememberMe -> rememberMe
-                .rememberMeServices(rememberMeServices())
-            )
             .logout(logout -> logout
-                .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout")
-                .deleteCookies("JSESSIONID", "remember-me")
                 .permitAll()
             )
             .csrf(csrf -> csrf
-                // Disable CSRF for H2 console (for development)
                 .ignoringRequestMatchers("/h2-console/**")
             )
             .headers(headers -> headers
-                // Allow framing for H2 console
                 .frameOptions(frame -> frame.sameOrigin())
-            )
-            .userDetailsService(userDetailsService);
+            );
 
         return http.build();
     }

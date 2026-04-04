@@ -29,9 +29,15 @@ spring:
       prefix: /WEB-INF/jsp/
       suffix: .jsp
 
+  # i18n Configuration
+  messages:
+    basename: messages
+    encoding: UTF-8
+
   # Security Configuration
   security:
     # Remember-Me cookie settings
     remember-me:
       secret: "online-course-secret-key-change-in-production-32chars!"
       token-validity-seconds: 604800  # 7 days = 7 * 24 * 60 * 60
+

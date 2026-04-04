@@ -2,6 +2,9 @@
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+
+<fmt:setLocale value="${requestScope.springLocale}" />
+<fmt:setBundle basename="messages" />
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <t:layout title="lecture.view.title">

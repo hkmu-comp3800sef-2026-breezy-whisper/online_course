@@ -3,6 +3,9 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 
+<fmt:setLocale value="${requestScope.springLocale}" />
+<fmt:setBundle basename="messages" />
+
 <t:layout title="admin.users.title">
 
     <h1 class="text-3xl font-bold text-gray-800 mb-6">

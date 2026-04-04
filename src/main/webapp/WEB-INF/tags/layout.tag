@@ -1,8 +1,12 @@
-<%@ tag page import="java.time.LocalDateTime" %>
+<%@ tag pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <%@ attribute name="title" required="true" type="java.lang.String" %>
+
+<%-- Override JSTL locale with Spring's resolved locale (set by WebMvcConfig interceptor) --%>
+<fmt:setLocale value="${requestScope.springLocale}" />
+<fmt:setBundle basename="messages" />
 
 <!DOCTYPE html>
 <html lang="${pageContext.response.locale}">

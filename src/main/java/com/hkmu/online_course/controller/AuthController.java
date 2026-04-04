@@ -2,10 +2,15 @@ package com.hkmu.online_course.controller;
 
 import com.hkmu.online_course.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Locale;
 
 /**
  * Controller for authentication (login/register).
@@ -15,10 +20,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AuthController {
 
     private final IUserService userService;
+    private final MessageSource messageSource;
 
     @Autowired
-    public AuthController(IUserService userService) {
+    public AuthController(IUserService userService, MessageSource messageSource) {
         this.userService = userService;
+        this.messageSource = messageSource;
     }
 
     @GetMapping("/login")
@@ -29,6 +36,14 @@ public class AuthController {
     @GetMapping("/register")
     public String register() {
         return "register";
+    }
+
+    @GetMapping("/test-i18n")
+    @ResponseBody
+    public String testI18n() {
+        Locale locale = LocaleContextHolder.getLocale();
+        String title = messageSource.getMessage("login.title", null, locale);
+        return "Current locale: " + locale + " | login.title = " + title;
     }
 
     @PostMapping("/register")
