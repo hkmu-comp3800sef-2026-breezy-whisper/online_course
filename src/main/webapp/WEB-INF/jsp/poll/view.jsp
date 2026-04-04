@@ -10,7 +10,7 @@
 <t:layout title="poll.view.title">
 
     <!-- Back Link -->
-    <a href="/poll/list" class="inline-block mb-4 text-blue-600 hover:text-blue-800 font-medium">
+    <a href="/" class="inline-block mb-4 text-blue-600 hover:text-blue-800 font-medium">
         &larr; <fmt:message key="common.back" />
     </a>
 
@@ -66,7 +66,7 @@
                                        class="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500" />
                                 <span class="ml-3 text-gray-700">${poll.option1}</span>
                                 <span class="ml-auto text-gray-500 text-sm">
-                                    (${voteCounts[1] != null ? voteCounts[1] : 0} <fmt:message key="poll.votes" />)
+                                    (${not empty voteCounts["1"] ? voteCounts["1"] : 0} <fmt:message key="poll.votes" />)
                                 </span>
                             </label>
                         </c:if>
@@ -79,7 +79,7 @@
                                        class="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500" />
                                 <span class="ml-3 text-gray-700">${poll.option2}</span>
                                 <span class="ml-auto text-gray-500 text-sm">
-                                    (${voteCounts[2] != null ? voteCounts[2] : 0} <fmt:message key="poll.votes" />)
+                                    (${not empty voteCounts["2"] ? voteCounts["2"] : 0} <fmt:message key="poll.votes" />)
                                 </span>
                             </label>
                         </c:if>
@@ -92,7 +92,7 @@
                                        class="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500" />
                                 <span class="ml-3 text-gray-700">${poll.option3}</span>
                                 <span class="ml-auto text-gray-500 text-sm">
-                                    (${voteCounts[3] != null ? voteCounts[3] : 0} <fmt:message key="poll.votes" />)
+                                    (${not empty voteCounts["3"] ? voteCounts["3"] : 0} <fmt:message key="poll.votes" />)
                                 </span>
                             </label>
                         </c:if>
@@ -105,7 +105,7 @@
                                        class="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500" />
                                 <span class="ml-3 text-gray-700">${poll.option4}</span>
                                 <span class="ml-auto text-gray-500 text-sm">
-                                    (${voteCounts[4] != null ? voteCounts[4] : 0} <fmt:message key="poll.votes" />)
+                                    (${not empty voteCounts["4"] ? voteCounts["4"] : 0} <fmt:message key="poll.votes" />)
                                 </span>
                             </label>
                         </c:if>
@@ -118,7 +118,7 @@
                                        class="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500" />
                                 <span class="ml-3 text-gray-700">${poll.option5}</span>
                                 <span class="ml-auto text-gray-500 text-sm">
-                                    (${voteCounts[5] != null ? voteCounts[5] : 0} <fmt:message key="poll.votes" />)
+                                    (${not empty voteCounts["5"] ? voteCounts["5"] : 0} <fmt:message key="poll.votes" />)
                                 </span>
                             </label>
                         </c:if>
@@ -149,7 +149,7 @@
                     <div class="p-4 border border-gray-300 rounded-lg">
                         <div class="flex justify-between mb-1">
                             <span class="text-gray-700">${poll.option1}</span>
-                            <span class="text-gray-500 text-sm">${voteCounts[1] != null ? voteCounts[1] : 0} votes</span>
+                            <span class="text-gray-500 text-sm">${not empty voteCounts["1"] ? voteCounts["1"] : 0} votes</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-2">
                             <div class="bg-green-600 h-2 rounded-full"
@@ -161,7 +161,7 @@
                     <div class="p-4 border border-gray-300 rounded-lg">
                         <div class="flex justify-between mb-1">
                             <span class="text-gray-700">${poll.option2}</span>
-                            <span class="text-gray-500 text-sm">${voteCounts[2] != null ? voteCounts[2] : 0} votes</span>
+                            <span class="text-gray-500 text-sm">${not empty voteCounts["2"] ? voteCounts["2"] : 0} votes</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-2">
                             <div class="bg-green-600 h-2 rounded-full"
@@ -173,7 +173,7 @@
                     <div class="p-4 border border-gray-300 rounded-lg">
                         <div class="flex justify-between mb-1">
                             <span class="text-gray-700">${poll.option3}</span>
-                            <span class="text-gray-500 text-sm">${voteCounts[3] != null ? voteCounts[3] : 0} votes</span>
+                            <span class="text-gray-500 text-sm">${not empty voteCounts["3"] ? voteCounts["3"] : 0} votes</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-2">
                             <div class="bg-green-600 h-2 rounded-full"
@@ -185,7 +185,7 @@
                     <div class="p-4 border border-gray-300 rounded-lg">
                         <div class="flex justify-between mb-1">
                             <span class="text-gray-700">${poll.option4}</span>
-                            <span class="text-gray-500 text-sm">${voteCounts[4] != null ? voteCounts[4] : 0} votes</span>
+                            <span class="text-gray-500 text-sm">${not empty voteCounts["4"] ? voteCounts["4"] : 0} votes</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-2">
                             <div class="bg-green-600 h-2 rounded-full"
@@ -197,7 +197,7 @@
                     <div class="p-4 border border-gray-300 rounded-lg">
                         <div class="flex justify-between mb-1">
                             <span class="text-gray-700">${poll.option5}</span>
-                            <span class="text-gray-500 text-sm">${voteCounts[5] != null ? voteCounts[5] : 0} votes</span>
+                            <span class="text-gray-500 text-sm">${not empty voteCounts["5"] ? voteCounts["5"] : 0} votes</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-2">
                             <div class="bg-green-600 h-2 rounded-full"
