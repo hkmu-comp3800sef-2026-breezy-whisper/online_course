@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 
 /**
  * Controller for Poll operations.
- *
  * Security is enforced at METHOD LEVEL via @PreAuthorize:
  * - create(), delete() require TEACHER role
  * - view(), vote() only require authentication (any role)
@@ -67,7 +66,7 @@ public class PollController {
                     .map(v -> String.valueOf(v.getSelectedOption()))
                     .orElse(null);
         }
-
+        System.out.println(voteCounts);
         model.addAttribute("poll", poll);
         model.addAttribute("voteCounts", voteCounts);
         model.addAttribute("userVote", userVote);
@@ -105,13 +104,13 @@ public class PollController {
                         @RequestParam(required = false) Long closeTime) {
         pollService.create(question, option1, option2, option3, option4, option5,
                 closeTime != null ? closeTime : -1L);
-        return "redirect:/poll/list";
+        return "redirect:/";
     }
 
     @PostMapping("/{pollId}/delete")
     @PreAuthorize("hasRole('TEACHER')")
     public String delete(@PathVariable Long pollId) {
         pollService.deleteById(pollId);
-        return "redirect:/poll/list";
+        return "redirect:/";
     }
 }

@@ -14,7 +14,6 @@ import java.util.List;
 
 /**
  * Controller for Lecture operations.
- *
  * Security is enforced at METHOD LEVEL via @PreAuthorize:
  * - create(), edit(), update(), delete() require TEACHER role
  * - list(), view() only require authentication (any role)
@@ -67,8 +66,9 @@ public class LectureController {
     @PreAuthorize("hasRole('TEACHER')")
     public String create(@RequestParam String title, @RequestParam String summary) {
         lectureService.create(title, summary);
-        return "redirect:/lecture/list";
+        return "redirect:/";
     }
+
 
     @GetMapping("/{lectureId}/edit")
     @PreAuthorize("hasRole('TEACHER')")
@@ -92,7 +92,7 @@ public class LectureController {
     @PreAuthorize("hasRole('TEACHER')")
     public String delete(@PathVariable Long lectureId) {
         lectureService.deleteById(lectureId);
-        return "redirect:/lecture/list";
+        return "redirect:/";
     }
 
     // ========== Course Material Endpoints ==========
