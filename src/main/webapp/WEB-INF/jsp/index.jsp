@@ -1,3 +1,4 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
@@ -19,7 +20,7 @@
         </div>
 
         <!-- Dynamic Content Area -->
-        <div class="flex flex-1 flex-col lg:flex-row gap-6 max-h-[600px]">
+        <div class="flex flex-1 flex-col lg:flex-row gap-6 max-h-[590px]">
 
             <c:choose>
                 <%-- STATE 1: USER IS LOGGED IN --%>
