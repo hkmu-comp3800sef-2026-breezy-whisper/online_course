@@ -23,71 +23,88 @@
 
     <title><fmt:message key="${title}" /></title>
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col">
-
-    <!-- Dynamic Navbar using Spring Security Taglib -->
-    <nav class="bg-white shadow-md">
-        <div class="max-w-7xl mx-auto px-4 py-3">
-            <div class="flex justify-between items-center">
-                <div class="flex space-x-6">
-                    <a href="/" class="text-gray-700 hover:text-blue-600 font-medium">
-                        <fmt:message key="nav.home" />
-                    </a>
-
+<body class="grid min-h-[100dvh] grid-cols-[minmax(0,1fr)] grid-rows-[auto_1fr_auto]">
+    <header class="w-full z-20 top-0 start-0">
+        <!-- Top Bar: Logo & Auth Action (Login/Logout) -->
+        <nav class="bg-neutral-primary">
+            <div class="flex flex-wrap justify-between items-center w-full px-6 py-4">
+                <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
+                <span class="self-center text-xl text-heading font-semibold whitespace-nowrap">
+                    <fmt:message key="index.title" />
+                </span>
+                </a>
+                <div class="flex items-center space-x-6 rtl:space-x-reverse">
+                    <!-- Anonymous: Show Login/Register -->
                     <sec:authorize access="isAnonymous()">
-                        <a href="/login" class="text-gray-700 hover:text-blue-600 font-medium">
+                        <a href="/login" class="text-sm font-medium text-fg-brand border-b-4 border-transparent hover:border-blue-700 transition-all">
                             <fmt:message key="nav.login" />
                         </a>
-                        <a href="/register" class="text-gray-700 hover:text-blue-600 font-medium">
+                        <a href="/register" class="text-sm font-medium text-fg-brand border-b-4 border-transparent hover:border-blue-700 transition-all">
                             <fmt:message key="nav.register" />
                         </a>
                     </sec:authorize>
 
+                    <!-- Authenticated: Show Username & Logout -->
                     <sec:authorize access="isAuthenticated()">
-                        <a href="/lecture/list" class="text-gray-700 hover:text-blue-600 font-medium">
-                            <fmt:message key="nav.lectures" />
-                        </a>
-                        <a href="/poll/list" class="text-gray-700 hover:text-blue-600 font-medium">
-                            <fmt:message key="nav.polls" />
-                        </a>
-                        <a href="/user/profile" class="text-gray-700 hover:text-blue-600 font-medium">
-                            <fmt:message key="nav.profile" />
-                        </a>
-                        <a href="/user/comments" class="text-gray-700 hover:text-blue-600 font-medium">
-                            <fmt:message key="nav.myComments" />
-                        </a>
-
-                        <sec:authorize access="hasRole('TEACHER')">
-                            <a href="/admin/users" class="text-gray-700 hover:text-blue-600 font-medium">
-                                <fmt:message key="nav.userManagement" />
-                            </a>
-                        </sec:authorize>
-                    </sec:authorize>
-                </div>
-
-                <div class="flex items-center space-x-4">
-                    <sec:authorize access="isAuthenticated()">
-                        <span class="text-gray-600 text-sm">
-                            <fmt:message key="nav.loggedInAs" />: <sec:authentication property="name" />
-                        </span>
+                    <span class="text-sm text-gray-500">
+                        <fmt:message key="nav.loggedInAs" />: <sec:authentication property="name" />
+                    </span>
                         <form action="/logout" method="post" class="inline">
                             <input type="hidden" name="_csrf" value="${_csrf.token}" />
-                            <button type="submit" class="text-gray-700 hover:text-red-600 font-medium">
+                            <button type="submit" class="text-sm font-medium text-red-600 border-b-4 border-transparent hover:border-red-600 transition-all">
                                 <fmt:message key="nav.logout" />
                             </button>
                         </form>
                     </sec:authorize>
+
+                    <!-- Language Switcher -->
+                    <div class="text-xs space-x-2 border-l pl-4 border-gray-300">
+                        <a href="?lang=en" class="hover:underline">EN</a>
+                        <span class="text-gray-300">|</span>
+                        <a href="?lang=zh" class="hover:underline">中文</a>
+                    </div>
                 </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-    <!-- Language Switcher -->
-    <div class="bg-gray-100 px-4 py-2 text-right">
-        <a href="?lang=en" class="text-blue-600 hover:underline mx-2">English</a>
-        <span class="text-gray-400">|</span>
-        <a href="?lang=zh" class="text-blue-600 hover:underline mx-2">中文</a>
-    </div>
+        <!-- Bottom Bar: Navigation Links -->
+        <nav class="bg-neutral-secondary-soft border-y border-default">
+            <div class="w-full px-6 py-3">
+                <div class="flex items-center">
+                    <ul class="flex flex-row font-medium mt-0 space-x-8 rtl:space-x-reverse text-sm">
+                        <li>
+                            <a href="/" class="text-heading border-b-4 border-transparent hover:border-blue-700 transition-all">
+                                <fmt:message key="nav.home" />
+                            </a>
+                        </li>
+
+                        <sec:authorize access="isAuthenticated()">
+                            <li>
+                                <a href="/user/comments" class="text-heading border-b-4 border-transparent hover:border-blue-700 transition-all">
+                                    <fmt:message key="nav.myComments" />
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/user/profile" class="text-heading border-b-4 border-transparent hover:border-blue-700 transition-all">
+                                    <fmt:message key="nav.profile" />
+                                </a>
+                            </li>
+
+                            <!-- Teacher Only -->
+                            <sec:authorize access="hasRole('TEACHER')">
+                                <li>
+                                    <a href="/admin/users" class="text-heading border-b-4 border-transparent hover:border-blue-700 transition-all">
+                                        <fmt:message key="nav.userManagement" />
+                                    </a>
+                                </li>
+                            </sec:authorize>
+                        </sec:authorize>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
 
     <!-- Page Content -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
