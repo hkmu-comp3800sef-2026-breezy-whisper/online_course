@@ -77,6 +77,10 @@ public class Comment {
         return user;
     }
 
+    public String getUsername() {
+        return user != null ? user.getUsername() : null;
+    }
+
     public void setUser(User user) {
         this.user = user;
     }
