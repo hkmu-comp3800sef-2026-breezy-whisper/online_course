@@ -51,12 +51,12 @@
         </h2>
 
         <c:choose>
-            <c:when test="${empty lecture.materials}">
+            <c:when test="${empty materials}">
                 <p class="text-gray-500 italic"><fmt:message key="lecture.noMaterials" /></p>
             </c:when>
             <c:otherwise>
                 <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    <c:forEach var="material" items="${lecture.materials}">
+                    <c:forEach var="material" items="${materials}">
                         <div class="bg-white rounded-lg shadow p-4 flex items-center justify-between">
                             <div>
                                 <p class="font-medium text-gray-800">${material.fileName}</p>
