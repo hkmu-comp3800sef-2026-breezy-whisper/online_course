@@ -26,4 +26,6 @@ public interface ICommentRepository {
     List<Comment> findByTarget(Long targetId, String targetType);
 
     List<Comment> findByUsername(String username);
+
+    void deleteByTarget(Long targetId, String targetType);
 }

@@ -17,4 +17,6 @@ public interface ICommentService {
     Comment create(String username, Long targetId, String targetType, String content);
 
     void deleteById(String commentId);
+
+    void deleteByTarget(Long targetId, String targetType);
 }

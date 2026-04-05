@@ -30,4 +30,6 @@ public interface IVoteRepository {
     Optional<Vote> findByPollIdAndUsername(Long pollId, String username);
 
     boolean existsByPollIdAndUsername(Long pollId, String username);
+
+    void deleteByPollId(Long pollId);
 }
