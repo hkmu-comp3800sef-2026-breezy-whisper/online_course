@@ -53,17 +53,13 @@ public class CommentController {
     }
 
     @PostMapping("/comment/{commentId}/delete")
-    @PreAuthorize("isAuthenticated()")
-    public String delete(@PathVariable String commentId,
-                        @AuthenticationPrincipal UserDetails userDetails) {
+    @PreAuthorize("hasRole('TEACHER')")
+    public String delete(@PathVariable String commentId) {
         Comment comment = commentService.findById(commentId);
         Long targetId = comment.getTargetId();
         String targetType = comment.getTargetType();
 
-        // Only allow deletion by the comment owner
-        if (userDetails != null && userDetails.getUsername().equals(comment.getUser().getUsername())) {
-            commentService.deleteById(commentId);
-        }
+        commentService.deleteById(commentId);
 
         if ("LECTURE".equals(targetType)) {
             return "redirect:/lecture/" + targetId;

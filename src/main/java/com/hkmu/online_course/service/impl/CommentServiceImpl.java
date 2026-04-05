@@ -71,4 +71,9 @@ public class CommentServiceImpl implements ICommentService {
         }
         commentRepo.deleteById(commentId);
     }
+
+    @Override
+    public void deleteByTarget(Long targetId, String targetType) {
+        commentRepo.deleteByTarget(targetId, targetType);
+    }
 }

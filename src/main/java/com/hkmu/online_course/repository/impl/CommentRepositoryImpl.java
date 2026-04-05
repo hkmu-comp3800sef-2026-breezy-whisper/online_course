@@ -74,4 +74,14 @@ public class CommentRepositoryImpl extends AbstractRepositoryImpl implements ICo
                 .where(QUser.user.username.eq(username))
                 .fetch();
     }
+
+    @Override
+    public void deleteByTarget(Long targetId, String targetType) {
+        QComment comment = QComment.comment;
+        queryFactory
+                .delete(comment)
+                .where(comment.targetId.eq(targetId)
+                        .and(comment.targetType.eq(targetType)))
+                .execute();
+    }
 }

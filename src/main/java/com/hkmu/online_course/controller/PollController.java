@@ -100,12 +100,19 @@ public class PollController {
     public String create(@RequestParam String question,
                         @RequestParam String option1,
                         @RequestParam String option2,
-                        @RequestParam String option3,
-                        @RequestParam String option4,
-                        @RequestParam String option5,
-                        @RequestParam(required = false) Long closeTime) {
-        pollService.create(question, option1, option2, option3, option4, option5,
-                closeTime != null ? closeTime : -1L);
+                        @RequestParam(required = false, defaultValue = "") String option3,
+                        @RequestParam(required = false, defaultValue = "") String option4,
+                        @RequestParam(required = false, defaultValue = "") String option5,
+                        @RequestParam(required = false) String closeTime) {
+        Long closeTimeMillis = -1L;
+        if (closeTime != null && !closeTime.isBlank()) {
+            closeTimeMillis = java.time.LocalDateTime.parse(closeTime)
+                    .atZone(java.time.ZoneId.systemDefault())
+                    .toInstant()
+                    .toEpochMilli();
+        }
+
+        pollService.create(question, option1, option2, option3, option4, option5, closeTimeMillis);
         return "redirect:/";
     }
 

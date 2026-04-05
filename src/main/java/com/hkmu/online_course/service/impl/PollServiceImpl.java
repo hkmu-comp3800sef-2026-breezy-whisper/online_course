@@ -1,11 +1,14 @@
 package com.hkmu.online_course.service.impl;
 
+import com.hkmu.online_course.model.Comment;
 import com.hkmu.online_course.model.Poll;
 import com.hkmu.online_course.repository.IPollRepository;
 import com.hkmu.online_course.repository.IVoteRepository;
+import com.hkmu.online_course.service.ICommentService;
 import com.hkmu.online_course.service.IPollService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,11 +21,13 @@ public class PollServiceImpl implements IPollService {
 
     private final IPollRepository pollRepo;
     private final IVoteRepository voteRepo;
+    private final ICommentService commentService;
 
     @Autowired
-    public PollServiceImpl(IPollRepository pollRepo, IVoteRepository voteRepo) {
+    public PollServiceImpl(IPollRepository pollRepo, IVoteRepository voteRepo, ICommentService commentService) {
         this.pollRepo = pollRepo;
         this.voteRepo = voteRepo;
+        this.commentService = commentService;
     }
 
     @Override
@@ -54,10 +59,13 @@ public class PollServiceImpl implements IPollService {
     }
 
     @Override
+    @Transactional
     public void deleteById(Long pollId) {
         if (!pollRepo.existsById(pollId)) {
             throw new IllegalArgumentException("Poll not found: " + pollId);
         }
+        commentService.deleteByTarget(pollId, Comment.TARGET_TYPE_POLL);
+        voteRepo.deleteByPollId(pollId);
         pollRepo.deleteById(pollId);
     }
 }

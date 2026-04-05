@@ -1,10 +1,13 @@
 package com.hkmu.online_course.service.impl;
 
+import com.hkmu.online_course.model.Comment;
 import com.hkmu.online_course.model.Lecture;
 import com.hkmu.online_course.repository.ILectureRepository;
+import com.hkmu.online_course.service.ICommentService;
 import com.hkmu.online_course.service.ILectureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,10 +19,12 @@ import java.util.Optional;
 public class LectureServiceImpl implements ILectureService {
 
     private final ILectureRepository lectureRepo;
+    private final ICommentService commentService;
 
     @Autowired
-    public LectureServiceImpl(ILectureRepository lectureRepo) {
+    public LectureServiceImpl(ILectureRepository lectureRepo, ICommentService commentService) {
         this.lectureRepo = lectureRepo;
+        this.commentService = commentService;
     }
 
     @Override
@@ -50,10 +55,12 @@ public class LectureServiceImpl implements ILectureService {
     }
 
     @Override
+    @Transactional
     public void deleteById(Long lectureId) {
         if (!lectureRepo.existsById(lectureId)) {
             throw new IllegalArgumentException("Lecture not found: " + lectureId);
         }
+        commentService.deleteByTarget(lectureId, Comment.TARGET_TYPE_LECTURE);
         lectureRepo.deleteById(lectureId);
     }
 }

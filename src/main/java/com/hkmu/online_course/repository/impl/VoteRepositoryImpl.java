@@ -99,4 +99,13 @@ public class VoteRepositoryImpl extends AbstractRepositoryImpl implements IVoteR
                         .and(QUser.user.username.eq(username)))
                 .fetchFirst() != null;
     }
+
+    @Override
+    public void deleteByPollId(Long pollId) {
+        QVote vote = QVote.vote;
+        queryFactory
+                .delete(vote)
+                .where(vote.poll.pollId.eq(pollId))
+                .execute();
+    }
 }

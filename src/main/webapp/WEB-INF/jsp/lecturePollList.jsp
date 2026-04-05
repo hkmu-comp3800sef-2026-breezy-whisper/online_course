@@ -36,21 +36,33 @@
             <tbody class="divide-y divide-gray-100">
             <c:if test="${param.type == 'lecture'}">
                 <c:forEach var="item" items="${lectures}">
-                    <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4 font-medium text-gray-900">${item.title}</td>
-                        <td class="px-6 py-4 text-right">
-                            <a href="/lecture/${item.lectureId}" class="text-blue-600 hover:underline">Details</a>
+                    <tr onclick="window.location.href='/lecture/${item.lectureId}'"
+                        class="group cursor-pointer">
+                        <td colspan="2" class="p-0">
+                            <div class="relative overflow-hidden bg-white transition-all duration-500 ease-out group-hover:shadow-[0_10px_30px_rgba(59,130,246,0.25)]">
+                                <span class="absolute inset-y-0 left-0 w-full origin-left scale-x-0 bg-blue-500 transition-transform duration-500 ease-out group-hover:scale-x-100"></span>
+                                <span class="absolute inset-y-0 left-0 w-full origin-right scale-x-100 bg-white transition-transform duration-500 ease-out group-hover:scale-x-0"></span>
+                                <div class="relative z-10 flex items-center justify-between px-6 py-4">
+                                    <span class="font-medium text-gray-900 transition-colors duration-300 group-hover:text-white">${item.title}</span>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 </c:forEach>
             </c:if>
             <c:if test="${param.type == 'poll'}">
                 <c:forEach var="item" items="${polls}">
-                    <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4 font-medium text-gray-900">${item.question}</td>
-                        <td class="px-6 py-4 text-right">
-                            <span class="text-xs text-gray-400 mr-2">${item.voteCount} votes</span>
-                            <a href="/poll/${item.pollId}" class="text-green-600 hover:underline">Vote</a>
+                    <tr onclick="window.location.href='/poll/${item.pollId}'"
+                        class="group cursor-pointer">
+                        <td colspan="2" class="p-0">
+                            <div class="relative overflow-hidden bg-white transition-all duration-500 ease-out group-hover:shadow-[0_10px_30px_rgba(34,197,94,0.25)]">
+                                <span class="absolute inset-y-0 left-0 w-full origin-left scale-x-0 bg-green-500 transition-transform duration-500 ease-out group-hover:scale-x-100"></span>
+                                <span class="absolute inset-y-0 left-0 w-full origin-right scale-x-100 bg-white transition-transform duration-500 ease-out group-hover:scale-x-0"></span>
+                                <div class="relative z-10 flex items-center justify-between px-6 py-4">
+                                    <span class="font-medium text-gray-900 transition-colors duration-300 group-hover:text-white">${item.question}</span>
+                                    <span class="text-xs text-gray-400 transition-colors duration-300 group-hover:text-green-50">${item.voteCount} votes</span>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 </c:forEach>
@@ -64,4 +76,3 @@
         </c:if>
     </div>
 </div>
-

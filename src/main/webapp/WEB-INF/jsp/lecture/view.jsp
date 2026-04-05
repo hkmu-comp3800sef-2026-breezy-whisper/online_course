@@ -119,7 +119,7 @@
                                         <fmt:message key="comment.on" /> ${comment.createdAt}
                                     </span>
                                 </div>
-                                <c:if test="${comment.username == pageContext.request.userPrincipal.name}">
+                                <sec:authorize access="hasRole('TEACHER')">
                                     <form action="/comment/${comment.commentId}/delete" method="post" class="inline">
                                         <input type="hidden" name="_csrf" value="${_csrf.token}" />
                                         <button type="submit"
@@ -127,7 +127,7 @@
                                             <fmt:message key="comment.delete" />
                                         </button>
                                     </form>
-                                </c:if>
+                                </sec:authorize>
                             </div>
                             <p class="text-gray-700">${comment.content}</p>
                         </div>
