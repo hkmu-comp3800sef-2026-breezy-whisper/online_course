@@ -41,6 +41,17 @@ public class CommentController {
         }
     }
 
+    @PostMapping("/comment/lecture/{lectureId}")
+    @PreAuthorize("isAuthenticated()")
+    public String createLectureComment(@AuthenticationPrincipal UserDetails userDetails,
+                                       @PathVariable Long lectureId,
+                                       @RequestParam String content) {
+        if (userDetails != null) {
+            commentService.create(userDetails.getUsername(), lectureId, "LECTURE", content);
+        }
+        return "redirect:/lecture/" + lectureId;
+    }
+
     @PostMapping("/comment/{commentId}/delete")
     @PreAuthorize("isAuthenticated()")
     public String delete(@PathVariable String commentId,
