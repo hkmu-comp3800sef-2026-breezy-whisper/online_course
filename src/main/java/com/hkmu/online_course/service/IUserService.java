@@ -9,6 +9,7 @@ import java.util.Optional;
  * Follows DIP - callers depend on this interface, not implementation.
  */
 public interface IUserService {
+    void deleteById(String username, String currentUsername);
 
     Optional<User> findById(String username);
 

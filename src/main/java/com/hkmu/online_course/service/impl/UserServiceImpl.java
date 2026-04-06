@@ -6,9 +6,14 @@ import com.hkmu.online_course.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import com.hkmu.online_course.service.ICommentService;
+import com.hkmu.online_course.service.IVoteService;
+import com.hkmu.online_course.service.ILectureService;
+import com.hkmu.online_course.service.ICourseMaterialService;
 
 /**
  * Implementation of IUserService.
@@ -19,11 +24,21 @@ public class UserServiceImpl implements IUserService {
 
     private final IUserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
+    private final ICommentService commentService;
+    private final IVoteService voteService;
+    private final ILectureService lectureService;
+    private final ICourseMaterialService courseMaterialService;
 
     @Autowired
-    public UserServiceImpl(IUserRepository userRepo, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(IUserRepository userRepo, PasswordEncoder passwordEncoder,
+                          ICommentService commentService, IVoteService voteService,
+                          ILectureService lectureService, ICourseMaterialService courseMaterialService) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
+        this.commentService = commentService;
+        this.voteService = voteService;
+        this.lectureService = lectureService;
+        this.courseMaterialService = courseMaterialService;
     }
 
     @Override
@@ -134,4 +149,23 @@ public class UserServiceImpl implements IUserService {
 
         return userRepo.save(user);
     }
+
+    @Override
+    @Transactional
+    public void deleteById(String username, String currentUsername) {
+        if (username.equals(currentUsername)) {
+            throw new IllegalArgumentException("Cannot delete your own account");
+        }
+
+        User user = userRepo.findById(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
+
+        // Delete user's comments
+        commentService.findByUsername(username).forEach(c -> commentService.deleteById(c.getCommentId()));
+
+        userRepo.deleteById(username);
+    }
 }
+
+
+

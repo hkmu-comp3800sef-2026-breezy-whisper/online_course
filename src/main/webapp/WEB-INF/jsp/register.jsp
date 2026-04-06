@@ -10,9 +10,18 @@
 
     <div class="max-w-md mx-auto">
         <div class="bg-white rounded-lg shadow-md p-8">
-            <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">
+
+    <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">
+        <c:choose>
+            <c:when test="${adminRegister}">
+                Add New User
+            </c:when>
+            <c:otherwise>
                 <fmt:message key="register.title" />
-            </h1>
+            </c:otherwise>
+        </c:choose>
+    </h1>
+
 
             <!-- Error Message -->
             <c:if test="${param.error != null}">
@@ -22,8 +31,14 @@
             </c:if>
 
             <form action="/register" method="post" data-validate>
+
                 <!-- CSRF Token -->
                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                <!-- Admin Register Flag -->
+                <c:if test="${adminRegister}">
+                    <input type="hidden" name="adminRegister" value="true" />
+                </c:if>
+
 
                 <!-- Username -->
                 <div class="mb-4">

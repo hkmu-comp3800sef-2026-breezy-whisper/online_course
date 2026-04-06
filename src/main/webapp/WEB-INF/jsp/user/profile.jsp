@@ -1,3 +1,4 @@
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
@@ -11,8 +12,22 @@
     <div class="max-w-2xl mx-auto">
         <div class="bg-white rounded-lg shadow-md p-8">
             <h1 class="text-2xl font-bold text-gray-800 mb-8">
-                <fmt:message key="user.profile.title" />
+                <c:choose>
+                    <c:when test="${adminView}">
+                        Edit User: ${user.username}
+                    </c:when>
+                    <c:otherwise>
+                        <fmt:message key="user.profile.title" />
+                    </c:otherwise>
+                </c:choose>
             </h1>
+
+            <!-- Back link for admin view -->
+            <c:if test="${adminView}">
+                <a href="/admin/users" class="inline-block mb-6 text-blue-600 hover:text-blue-800 font-medium">
+                    ← Back to Users
+                </a>
+            </c:if>
 
             <!-- Success Message -->
             <c:if test="${param.updated != null}">
@@ -21,8 +36,18 @@
                 </div>
             </c:if>
 
-            <form action="/user/profile" method="post" data-validate>
+            <c:choose>
+                <c:when test="${adminView}">
+                    <form action='<c:url value="/admin/users/${targetUsername}/update"/>' method="post" data-validate>
+                </c:when>
+                <c:otherwise>
+                    <form action='<c:url value="/user/profile"/>' method="post" data-validate>
+                </c:otherwise>
+            </c:choose>
                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                <c:if test="${adminView}">
+                    <input type="hidden" name="username" value="${targetUsername}"/>
+                </c:if>
 
                 <!-- Username (read-only) -->
                 <div class="mb-4">
@@ -103,10 +128,18 @@
                 <!-- Submit -->
                 <button type="submit"
                         class="bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
-                    <fmt:message key="user.profile.update.submit" />
+                    <c:choose>
+                        <c:when test="${adminView}">
+                            Update User
+                        </c:when>
+                        <c:otherwise>
+                            <fmt:message key="user.profile.update.submit" />
+                        </c:otherwise>
+                    </c:choose>
                 </button>
             </form>
         </div>
     </div>
 
 </t:layout>
+

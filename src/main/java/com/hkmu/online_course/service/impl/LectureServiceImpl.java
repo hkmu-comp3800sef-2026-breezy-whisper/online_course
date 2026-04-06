@@ -2,9 +2,11 @@ package com.hkmu.online_course.service.impl;
 
 import com.hkmu.online_course.model.Comment;
 import com.hkmu.online_course.model.Lecture;
+import com.hkmu.online_course.service.ICourseMaterialService;
 import com.hkmu.online_course.repository.ILectureRepository;
 import com.hkmu.online_course.service.ICommentService;
 import com.hkmu.online_course.service.ILectureService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,11 +22,14 @@ public class LectureServiceImpl implements ILectureService {
 
     private final ILectureRepository lectureRepo;
     private final ICommentService commentService;
+    private final ICourseMaterialService materialService;
 
-    @Autowired
-    public LectureServiceImpl(ILectureRepository lectureRepo, ICommentService commentService) {
+
+@Autowired
+    public LectureServiceImpl(ILectureRepository lectureRepo, ICommentService commentService, ICourseMaterialService materialService) {
         this.lectureRepo = lectureRepo;
         this.commentService = commentService;
+        this.materialService = materialService;
     }
 
     @Override
@@ -54,13 +59,16 @@ public class LectureServiceImpl implements ILectureService {
         return lectureRepo.save(lecture);
     }
 
-    @Override
+@Override
     @Transactional
     public void deleteById(Long lectureId) {
         if (!lectureRepo.existsById(lectureId)) {
             throw new IllegalArgumentException("Lecture not found: " + lectureId);
         }
+        // Delete materials first to avoid FK constraint
+        materialService.findByLectureId(lectureId).forEach(material -> materialService.deleteById(material.getMaterialId()));
         commentService.deleteByTarget(lectureId, Comment.TARGET_TYPE_LECTURE);
         lectureRepo.deleteById(lectureId);
     }
+
 }

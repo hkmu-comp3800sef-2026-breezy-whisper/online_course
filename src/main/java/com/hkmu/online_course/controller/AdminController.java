@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,12 +29,43 @@ public class AdminController {
         this.userService = userService;
     }
 
+
     @GetMapping("/users")
+    @PreAuthorize("hasRole('TEACHER')")
     public String listUsers(Model model) {
         List<User> allUsers = userService.findAll();
         model.addAttribute("users", allUsers);
         return "admin/users";
     }
+
+
+    @GetMapping("/users/create")
+    @PreAuthorize("hasRole('TEACHER')")
+    public String createUserForm(Model model) {
+        model.addAttribute("adminRegister", true);
+        return "register";
+    }
+
+
+
+    @GetMapping("/users/{username}/view")
+    @PreAuthorize("hasRole('TEACHER')")
+    public String viewUser(@PathVariable String username, Model model) {
+        User user = userService.findById(username).orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
+        model.addAttribute("user", user);
+        model.addAttribute("adminView", true);
+        model.addAttribute("targetUsername", username);
+        return "user/profile";
+    }
+
+
+    @PostMapping("/users/{username}/update")
+    @PreAuthorize("hasRole('TEACHER')")
+    public String updateUser(@PathVariable String username, String fullName, String email, String phoneNumber, Model model) {
+        userService.updateProfile(username, fullName, email, phoneNumber);
+        return "redirect:/admin/users/" + username + "/view?updated=true";
+    }
+
 
     @PostMapping("/users/{username}/activate")
     @PreAuthorize("hasRole('TEACHER')")
@@ -56,4 +88,12 @@ public class AdminController {
         userService.enableUser(username);
         return "redirect:/admin/users";
     }
+
+    @PostMapping("/users/{username}/delete")
+    @PreAuthorize("hasRole('TEACHER')")
+    public String deleteUser(@PathVariable String username, @AuthenticationPrincipal UserDetails principal) {
+        userService.deleteById(username, principal.getUsername());
+        return "redirect:/admin/users?deleted=true";
+    }
 }
+

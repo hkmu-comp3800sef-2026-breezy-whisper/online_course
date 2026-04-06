@@ -8,9 +8,16 @@
 
 <t:layout title="admin.users.title">
 
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">
-        <fmt:message key="admin.users.title" />
-    </h1>
+
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-800 inline">
+            <fmt:message key="admin.users.title" />
+        </h1>
+        
+        <a href="/admin/users/create" class="ml-6 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 font-medium inline-flex items-center">
+            Add New User
+        </a>
+    </div>
 
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
         <table class="min-w-full divide-y divide-gray-200">
@@ -34,6 +41,9 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         <fmt:message key="admin.users.actions" />
                     </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <fmt:message key="admin.users.delete" />
+                    </th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -48,8 +58,10 @@
                     <c:otherwise>
                         <c:forEach var="user" items="${users}">
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    ${user.username}
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="/admin/users/${user.username}/view" class="text-blue-600 hover:text-blue-900 hover:underline">
+                                        ${user.username}
+                                    </a>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     ${user.fullName}
@@ -109,6 +121,14 @@
                                             </form>
                                         </c:otherwise>
                                     </c:choose>
+                                </td>
+                                <td  class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <form action="/admin/users/${user.username}/delete" method="post" class="inline" onsubmit="return confirmDelete('${user.username}')">
+                                        <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                                        <button type="submit" class="text-red-600 hover:text-red-900">
+                                            <fmt:message key="admin.users.delete" />
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         </c:forEach>

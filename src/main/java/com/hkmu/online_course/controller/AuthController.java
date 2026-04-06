@@ -46,22 +46,29 @@ public class AuthController {
         return "Current locale: " + locale + " | login.title = " + title;
     }
 
+
     @PostMapping("/register")
     public String registerSubmit(@RequestParam String username,
                                   @RequestParam String password,
                                   @RequestParam String fullName,
                                   @RequestParam String email,
                                   @RequestParam String phoneNumber,
-                                  @RequestParam(defaultValue = "student") String role) {
+                                  @RequestParam(defaultValue = "student") String role,
+                                  @RequestParam(required = false) Boolean adminRegister) {
         try {
             if ("teacher".equals(role)) {
                 userService.registerTeacher(username, password, fullName, email, phoneNumber);
             } else {
                 userService.registerStudent(username, password, fullName, email, phoneNumber);
             }
+            if (adminRegister != null && adminRegister) {
+                return "redirect:/admin/users?userCreated";
+            }
             return "redirect:/login?registered";
         } catch (IllegalArgumentException e) {
-            return "redirect:/register?error=" + e.getMessage();
+            String redirect = adminRegister != null && adminRegister ? "/admin/users/create" : "/register";
+            return "redirect:" + redirect + "?error=" + e.getMessage();
         }
     }
+
 }
