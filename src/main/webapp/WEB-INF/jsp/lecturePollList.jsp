@@ -60,7 +60,7 @@
                                 <span class="absolute inset-y-0 left-0 w-full origin-right scale-x-100 bg-white transition-transform duration-500 ease-out group-hover:scale-x-0"></span>
                                 <div class="relative z-10 flex items-center justify-between px-6 py-4">
                                     <span class="font-medium text-gray-900 transition-colors duration-300 group-hover:text-white">${item.question}</span>
-                                    <span class="text-xs text-gray-400 transition-colors duration-300 group-hover:text-green-50">${item.voteCount} votes</span>
+${item.voteCount} <fmt:message key="poll.votes" />
                                 </div>
                             </div>
                         </td>

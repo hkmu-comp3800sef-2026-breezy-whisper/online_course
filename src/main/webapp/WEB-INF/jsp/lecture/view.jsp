@@ -51,9 +51,9 @@
                 <fmt:message key="lecture.materials" />
             </h2>
             <sec:authorize access="hasRole('TEACHER')">
-                <a href="/lecture/${lecture.lectureId}/material/create"
+            <a href="/lecture/${lecture.lectureId}/material/create"
                    class="bg-green-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-green-700 transition-colors ml-4">
-                    + Add Material
+                    <fmt:message key="lecture.material.upload.title" />
                 </a>
             </sec:authorize>
         </div>
@@ -81,8 +81,8 @@
                                     <form action="/lecture/${lecture.lectureId}/material/${material.materialId}/delete" method="post" class="inline">
                                         <input type="hidden" name="_csrf" value="${_csrf.token}" />
                                         <button type="submit" class="text-red-600 hover:text-red-800 font-medium text-sm flex items-center py-1"
-                                                onclick="return confirm('Delete this material?')">
-                                            Delete
+onclick="return confirm('<fmt:message key="common.confirmDelete" />')">
+                                            <fmt:message key="common.delete" />
                                         </button>
                                     </form>
                                 </sec:authorize>
@@ -113,7 +113,7 @@
                               required
                               rows="3"
                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
-                              placeholder="Write your comment here..."></textarea>
+placeholder="<fmt:message key="comment.content.placeholder" />"></textarea>
                     <button type="submit"
                             class="bg-green-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
                         <fmt:message key="comment.submit" />

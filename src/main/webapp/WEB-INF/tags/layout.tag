@@ -70,8 +70,16 @@
         <!-- Bottom Bar: Navigation Links -->
         <nav class="bg-neutral-secondary-soft border-y border-default">
             <div class="w-full px-6 py-3">
-                <div class="flex items-center">
-                    <ul class="flex flex-row font-medium mt-0 space-x-8 rtl:space-x-reverse text-sm">
+                <div class="flex items-center justify-between">
+                    <!-- Mobile hamburger -->
+                    <button id="mobile-menu-btn" class="md:hidden p-1 -ml-1 mr-2 rounded-md text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    
+                    <!-- Desktop nav -->
+                    <ul id="desktop-nav" class="hidden md:flex flex-row font-medium space-x-8 rtl:space-x-reverse text-sm">
                         <li>
                             <a href="/" class="text-heading border-b-4 border-transparent hover:border-blue-700 transition-all">
                                 <fmt:message key="nav.home" />
@@ -89,6 +97,16 @@
                                     <fmt:message key="nav.profile" />
                                 </a>
                             </li>
+                            <li>
+                                <a href="/lecture/list" class="text-heading border-b-4 border-transparent hover:border-blue-700 transition-all">
+                                    <fmt:message key="nav.lectures" />
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/poll/list" class="text-heading border-b-4 border-transparent hover:border-blue-700 transition-all">
+                                    <fmt:message key="nav.polls" />
+                                </a>
+                            </li>
 
                             <!-- Teacher Only -->
                             <sec:authorize access="hasRole('TEACHER')">
@@ -101,6 +119,47 @@
                         </sec:authorize>
                     </ul>
                 </div>
+
+                <!-- Mobile dropdown (pushes content) -->
+                <div id="mobile-menu" class="md:hidden mt-2 p-4 bg-white border border-gray-200 rounded-lg shadow-lg hidden">
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="/" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors">
+                                <fmt:message key="nav.home" />
+                            </a>
+                        </li>
+                        <sec:authorize access="isAuthenticated()">
+                            <li>
+                                <a href="/user/comments" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors">
+                                    <fmt:message key="nav.myComments" />
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/user/profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors">
+                                    <fmt:message key="nav.profile" />
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/lecture/list" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors">
+                                    <fmt:message key="nav.lectures" />
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/poll/list" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors">
+                                    <fmt:message key="nav.polls" />
+                                </a>
+                            </li>
+                            <sec:authorize access="hasRole('TEACHER')">
+                                <li>
+                                    <a href="/admin/users" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded transition-colors">
+                                        <fmt:message key="nav.userManagement" />
+                                    </a>
+                                </li>
+                            </sec:authorize>
+                        </sec:authorize>
+                    </ul>
+                </div>
+
             </div>
         </nav>
     </header>
@@ -111,6 +170,8 @@
         <jsp:doBody />
     </main>
 
+    <!-- Navbar mobile JS -->
+    <script src="<c:url value='/js/navbar.js'/>"></script>
     <!-- TypeScript compiled JavaScript -->
     <script src="<c:url value='/js/index.js'/>"></script>
 

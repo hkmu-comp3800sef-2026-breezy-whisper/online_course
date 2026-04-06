@@ -6,16 +6,16 @@
 <fmt:setLocale value="${requestScope.springLocale}" />
 <fmt:setBundle basename="messages" />
 
-<t:layout title="Upload Course Material">
-    <script src="/js/upload-validator.js"></script>
+<t:layout title="lecture.material.upload.title">
+<script src="<c:url value='/js/upload-validator.js'/>"></script>
 
     <div class="max-w-2xl mx-auto">
         <a href="/lecture/${lectureId}" class="inline-block mb-4 text-blue-600 hover:text-blue-800 font-medium">
-            &larr; Back
+            <fmt:message key="lecture.material.back" />
         </a>
 
         <div class="bg-white rounded-lg shadow-md p-8">
-            <h1 class="text-2xl font-bold text-gray-800 mb-8">Upload Course Material</h1>
+            <h1 class="text-2xl font-bold text-gray-800 mb-8"><fmt:message key="lecture.material.upload.title" /></h1>
 
             <form action="/lecture/${lectureId}/material/create" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
@@ -27,28 +27,31 @@
                 </c:if>
 
                 <div class="mb-4">
-                    <label for="fileName" class="block text-gray-700 font-medium mb-2">File Name</label>
+                    <label for="fileName" class="block text-gray-700 font-medium mb-2"><fmt:message key="lecture.material.fileName" /></label>
                     <input type="text" 
-                           id="fileName" name="fileName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter file name (e.g. document.pdf)" />
+                           id="fileName" name="fileName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="<fmt:message key="lecture.material.fileName.placeholder" />"/>
                 </div>
 
                 <div class="mb-6">
-                    <label for="file" class="block text-gray-700 font-medium mb-2">Select File</label>
+                    <label for="file" class="block text-gray-700 font-medium mb-2"><fmt:message key="lecture.material.selectFile" /></label>
                     <input type="file" 
                            id="file"
                            name="file"
                            required
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <div id="fileError" class="mt-2 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg hidden">
+                        <fmt:message key="lecture.material.error.fileTooLarge" />
+                    </div>
                 </div>
 
                 <div class="flex gap-4">
                     <button type="submit"
                             class="bg-green-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
-                        Upload
+                        <fmt:message key="lecture.material.upload" />
                     </button>
                     <a href="/lecture/${lectureId}"
                        class="bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
-                        Cancel
+                        <fmt:message key="lecture.material.cancel" />
                     </a>
                 </div>
             </form>
