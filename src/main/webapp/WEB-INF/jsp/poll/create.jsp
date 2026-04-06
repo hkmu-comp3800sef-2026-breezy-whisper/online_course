@@ -9,7 +9,7 @@
 <t:layout title="poll.create.title">
 
     <div class="max-w-2xl mx-auto">
-        <a href="/poll/list" class="inline-block mb-4 text-blue-600 hover:text-blue-800 font-medium">
+        <a href="/" class="inline-block mb-4 text-blue-600 hover:text-blue-800 font-medium">
             &larr; <fmt:message key="common.back" />
         </a>
 
@@ -111,7 +111,7 @@
                             class="bg-green-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
                         <fmt:message key="common.submit" />
                     </button>
-                    <a href="/poll/list"
+                    <a href="/"
                        class="bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
                         <fmt:message key="common.cancel" />
                     </a>

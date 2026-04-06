@@ -67,7 +67,17 @@ public class CourseMaterialServiceImpl implements ICourseMaterialService {
     @Override
     public byte[] download(Long materialId) {
         CourseMaterial material = findById(materialId);
-        return decompress(material.getFileContent());
+        byte[] decompressed;
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(material.getFileContent());
+             ZstdInputStream zis = new ZstdInputStream(bais);
+             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            zis.transferTo(baos);
+            decompressed = baos.toByteArray();
+        } catch (IOException e) {
+            // Decompression failed - fall back to raw content
+            decompressed = material.getFileContent();
+        }
+        return decompressed;
     }
 
     @Override
@@ -80,23 +90,13 @@ public class CourseMaterialServiceImpl implements ICourseMaterialService {
 
     private byte[] compress(byte[] data) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-             ZstdOutputStream zos = new ZstdOutputStream(baos)) {
+             ZstdOutputStream zos = new ZstdOutputStream(baos, 3)) {  // Compression level 3
             zos.write(data);
-            zos.flush();
+            zos.close();  // Ensure full frame
             return baos.toByteArray();
         } catch (IOException e) {
             throw new RuntimeException("Failed to compress data", e);
         }
     }
-
-    private byte[] decompress(byte[] compressed) {
-        try (ByteArrayInputStream bais = new ByteArrayInputStream(compressed);
-             ZstdInputStream zis = new ZstdInputStream(bais);
-             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            zis.transferTo(baos);
-            return baos.toByteArray();
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to decompress data", e);
-        }
-    }
 }
+

@@ -42,12 +42,12 @@ public class PollController {
 
     // ========== Public/Authenticated User Endpoints ==========
 
-//    @GetMapping("/list")
-//    public String list(Model model) {
-//        List<Poll> polls = pollService.findAll();
-//        model.addAttribute("polls", polls);
-//        return "poll/list";
-//    }
+    @GetMapping("/list")
+    public String list(Model model) {
+        List<Poll> polls = pollService.findAll();
+        model.addAttribute("polls", polls);
+        return "poll/list";
+    }
 
     @GetMapping("/{pollId}")
     public String view(@PathVariable Long pollId,
@@ -123,3 +123,4 @@ public class PollController {
         return "redirect:/";
     }
 }
+
