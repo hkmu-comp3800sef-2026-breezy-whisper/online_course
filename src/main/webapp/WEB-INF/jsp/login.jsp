@@ -93,7 +93,9 @@
             <!-- Register Link -->
             <p class="text-center mt-6 text-gray-600">
                 <fmt:message key="login.register" />
-                <a href="/register" class="text-blue-600 hover:underline">Register</a>
+                <a href="/register" class="text-blue-600 hover:underline">
+                    <fmt:message key="register.title" />
+                </a>
             </p>
         </div>
     </div>

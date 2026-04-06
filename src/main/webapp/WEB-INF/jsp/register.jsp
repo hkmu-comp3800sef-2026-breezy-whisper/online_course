@@ -109,8 +109,12 @@
                     <input type="tel"
                            id="phoneNumber"
                            name="phoneNumber"
+                           pattern="\d{8}"
+                           title="Phone must be exactly 8 digits"
+                           data-validate="phone"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           placeholder="Enter your phone number" />
+                           placeholder="Enter 8-digit phone number" />
+                    <div id="phone-error" class="text-red-500 text-sm mt-1 hidden"></div>
                 </div>
 
                 <!-- Role -->
@@ -146,7 +150,9 @@
             <c:if test="${empty adminRegister}">
                 <p class="text-center mt-6 text-gray-600">
                     <fmt:message key="login.register" />
-                    <a href="/login" class="text-blue-600 hover:underline">Login</a>
+                    <a href="/login" class="text-blue-600 hover:underline">
+                        <fmt:message key="login.title" />
+                    </a>
                 </p>
             </c:if>
         </div>

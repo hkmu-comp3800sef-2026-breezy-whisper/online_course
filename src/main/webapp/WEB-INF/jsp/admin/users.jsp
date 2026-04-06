@@ -15,7 +15,7 @@
         </h1>
         
         <a href="/admin/users/create" class="ml-6 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 font-medium inline-flex items-center">
-            Add New User
+            <fmt:message key="admin.users.add" />
         </a>
     </div>
 
