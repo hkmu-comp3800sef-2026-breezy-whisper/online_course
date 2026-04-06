@@ -6,13 +6,13 @@
   "scripts": {
     "build:ts": "tsc",
     "watch:ts": "tsc --watch",
-    "build:bundle": "esbuild src/main/webapp/ts/index.ts --bundle --outdir=src/main/webapp/js --format=iife --sourcemap",
-    "watch:bundle": "esbuild src/main/webapp/ts/index.ts --bundle --outdir=src/main/webapp/js --format=iife --sourcemap --watch",
+    "build:bundle": "esbuild src/main/webapp/ts/**/*.ts --bundle --outdir=src/main/webapp/js --format=iife --sourcemap",
+    "watch:bundle": "esbuild src/main/webapp/ts/**/*.ts --bundle --outdir=src/main/webapp/js --format=iife --sourcemap --watch",
     "build": "npm run build:ts && npm run build:bundle"
   },
   "devDependencies": {
-    "typescript": "^5.3.0",
-    "esbuild": "^0.20.0",
-    "@types/node": "^20.0.0"
+    "typescript": "^6.0.2",
+    "esbuild": "^0.28.0",
+    "@types/node": "^25.5.2"
   }
 }
