@@ -14,7 +14,7 @@
     <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">
         <c:choose>
             <c:when test="${adminRegister}">
-                Add New User
+                <fmt:message key="admin.users.add" />
             </c:when>
             <c:otherwise>
                 <fmt:message key="register.title" />
@@ -130,15 +130,25 @@
                 <!-- Submit -->
                 <button type="submit"
                         class="w-full bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
-                    <fmt:message key="register.submit" />
+                        <c:choose>
+                            <c:when test="${adminRegister}">
+                                <fmt:message key="admin.users.add" />
+                            </c:when>
+                            <c:otherwise>
+                                <fmt:message key="register.submit" />
+                            </c:otherwise>
+                        </c:choose>
                 </button>
             </form>
 
             <!-- Login Link -->
-            <p class="text-center mt-6 text-gray-600">
-                <fmt:message key="login.register" />
-                <a href="/login" class="text-blue-600 hover:underline">Login</a>
-            </p>
+            
+            <c:if test="${empty adminRegister}">
+                <p class="text-center mt-6 text-gray-600">
+                    <fmt:message key="login.register" />
+                    <a href="/login" class="text-blue-600 hover:underline">Login</a>
+                </p>
+            </c:if>
         </div>
     </div>
 

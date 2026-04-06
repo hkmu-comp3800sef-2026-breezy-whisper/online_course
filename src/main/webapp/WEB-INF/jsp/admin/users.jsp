@@ -123,7 +123,7 @@
                                     </c:choose>
                                 </td>
                                 <td  class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <form action="/admin/users/${user.username}/delete" method="post" class="inline" onsubmit="return confirmDelete('${user.username}')">
+                                    <form action="/admin/users/${user.username}/delete" method="post" class="inline">
                                         <input type="hidden" name="_csrf" value="${_csrf.token}" />
                                         <button type="submit" class="text-red-600 hover:text-red-900">
                                             <fmt:message key="admin.users.delete" />
