@@ -9,7 +9,7 @@
 <t:layout title="lecture.create.title">
 
     <div class="max-w-2xl mx-auto">
-        <a href="/lecture/list" class="inline-block mb-4 text-blue-600 hover:text-blue-800 font-medium">
+        <a href="/" class="inline-block mb-4 text-blue-600 hover:text-blue-800 font-medium">
             &larr; <fmt:message key="lecture.back" />
         </a>
 
@@ -18,7 +18,7 @@
                 <fmt:message key="lecture.create.title" />
             </h1>
 
-            <form action="/lecture/create" method="post" data-validate>
+            <form action="/lecture/create" method="post" data-validate">
                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
 
                 <!-- Title -->
@@ -57,7 +57,7 @@
                             class="bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
                         <fmt:message key="lecture.create.submit" />
                     </button>
-                    <a href="/lecture/list"
+                    <a href="/"
                        class="bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
                         <fmt:message key="common.cancel" />
                     </a>

@@ -1,15 +1,19 @@
 package com.hkmu.online_course.controller;
 
+import com.hkmu.online_course.model.CourseMaterial;
 import com.hkmu.online_course.model.Lecture;
-import com.hkmu.online_course.service.ILectureService;
 import com.hkmu.online_course.service.ICourseMaterialService;
+import com.hkmu.online_course.service.ILectureService;
 import com.hkmu.online_course.service.ICommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -37,12 +41,12 @@ public class LectureController {
 
     // ========== Public/Authenticated User Endpoints ==========
 
-//    @GetMapping("/list")
-//    public String list(Model model) {
-//        List<Lecture> lectures = lectureService.findAll();
-//        model.addAttribute("lectures", lectures);
-//        return "lecture/list";
-//    }
+    @GetMapping("/list")
+    public String list(Model model) {
+        List<Lecture> lectures = lectureService.findAll();
+        model.addAttribute("lectures", lectures);
+        return "lecture/list";
+    }
 
     @GetMapping("/{lectureId}")
     public String view(@PathVariable Long lectureId, Model model) {
@@ -68,7 +72,6 @@ public class LectureController {
         lectureService.create(title, summary);
         return "redirect:/";
     }
-
 
     @GetMapping("/{lectureId}/edit")
     @PreAuthorize("hasRole('TEACHER')")
@@ -107,12 +110,34 @@ public class LectureController {
     @PostMapping("/{lectureId}/material/create")
     @PreAuthorize("hasRole('TEACHER')")
     public String createMaterial(@PathVariable Long lectureId,
-                                @RequestParam String fileName,
-                                @RequestParam String fileExtension,
-                                @RequestParam String mimeType,
-                                @RequestParam byte[] fileContent) {
-        materialService.upload(lectureId, fileName, fileExtension, mimeType, fileContent);
+                                @RequestParam("fileName") String fileName,
+                                @RequestParam("file") MultipartFile file) throws IOException {
+        String fileExtension = getExtension(file.getOriginalFilename());
+        String mimeType = file.getContentType();
+        byte[] fileContent = file.getBytes();
+        materialService.upload(lectureId, fileName + "." + fileExtension, fileExtension, mimeType, fileContent);
         return "redirect:/lecture/" + lectureId;
+    }
+
+    @GetMapping("/{lectureId}/material/{materialId}/download")
+    public void downloadMaterial(@PathVariable Long lectureId,
+                                @PathVariable Long materialId,
+                                HttpServletResponse response) throws IOException {
+        CourseMaterial material = materialService.findById(materialId);
+        byte[] content = materialService.download(materialId);
+        response.setContentType(material.getMimeType());
+        String encodedFilename = java.net.URLEncoder.encode(material.getFileName(), "UTF-8").replaceAll("\\+", "%20");
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + encodedFilename);
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + material.getFileName() + "\"; filename*=UTF-8''" + encodedFilename);
+        response.setContentLength((int) content.length);
+        response.getOutputStream().write(content);
+    }
+
+    private String getExtension(String filename) {
+        if (filename == null || !filename.contains(".")) {
+            return "unknown";
+        }
+        return filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
     }
 
     @PostMapping("/{lectureId}/material/{materialId}/delete")
@@ -123,3 +148,4 @@ public class LectureController {
         return "redirect:/lecture/" + lectureId;
     }
 }
+

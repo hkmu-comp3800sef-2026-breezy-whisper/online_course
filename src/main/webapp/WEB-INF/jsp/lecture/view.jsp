@@ -46,9 +46,17 @@
 
     <!-- Course Materials Section -->
     <section class="mb-8">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6 pb-2 border-b-2 border-blue-500">
-            <fmt:message key="lecture.materials" />
-        </h2>
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 pb-2 border-b-2 border-blue-500 flex-1">
+                <fmt:message key="lecture.materials" />
+            </h2>
+            <sec:authorize access="hasRole('TEACHER')">
+                <a href="/lecture/${lecture.lectureId}/material/create"
+                   class="bg-green-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-green-700 transition-colors ml-4">
+                    + Add Material
+                </a>
+            </sec:authorize>
+        </div>
 
         <c:choose>
             <c:when test="${empty materials}">
@@ -57,17 +65,28 @@
             <c:otherwise>
                 <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     <c:forEach var="material" items="${materials}">
-                        <div class="bg-white rounded-lg shadow p-4 flex items-center justify-between">
-                            <div>
-                                <p class="font-medium text-gray-800">${material.fileName}</p>
+<div class="bg-white rounded-lg shadow p-6 border hover:shadow-lg transition-all flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <div class="flex-1 min-w-0">
+                                <p class="font-medium text-gray-800 truncate">${material.fileName}</p>
                                 <p class="text-gray-500 text-sm">
                                     <fmt:formatNumber value="${material.fileSize / 1024}" pattern="#,##0.##" /> KB
                                 </p>
                             </div>
-                            <a href="/lecture/${lecture.lectureId}/material/${material.materialId}/download"
-                               class="text-blue-600 hover:text-blue-800 font-medium">
-                                <fmt:message key="lecture.download" />
-                            </a>
+                            <div class="flex gap-3 items-center self-end sm:self-auto">
+                                <a href="/lecture/${lecture.lectureId}/material/${material.materialId}/download"
+                                   class="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center py-1">
+                                    <fmt:message key="lecture.download" />
+                                </a>
+                                <sec:authorize access="hasRole('TEACHER')">
+                                    <form action="/lecture/${lecture.lectureId}/material/${material.materialId}/delete" method="post" class="inline">
+                                        <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                                        <button type="submit" class="text-red-600 hover:text-red-800 font-medium text-sm flex items-center py-1"
+                                                onclick="return confirm('Delete this material?')">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </sec:authorize>
+                            </div>
                         </div>
                     </c:forEach>
                 </div>
@@ -138,3 +157,4 @@
     </section>
 
 </t:layout>
+
