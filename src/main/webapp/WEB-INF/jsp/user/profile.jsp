@@ -14,7 +14,7 @@
             <h1 class="text-2xl font-bold text-gray-800 mb-8">
                 <c:choose>
                     <c:when test="${adminView}">
-                        Edit User: ${user.username}
+                        <fmt:message key="user.profile.title2" /> ${user.username}
                     </c:when>
                     <c:otherwise>
                         <fmt:message key="user.profile.title" />
@@ -25,7 +25,7 @@
             <!-- Back link for admin view -->
             <c:if test="${adminView}">
                 <a href="/admin/users" class="inline-block mb-6 text-blue-600 hover:text-blue-800 font-medium">
-                    ← Back to Users
+                    ← <fmt:message key="user.profile.back" />
                 </a>
             </c:if>
 
@@ -101,7 +101,7 @@
                            name="phoneNumber"
                            value="${user.phoneNumber}"
                            pattern="\d{8}"
-                           title="Phone must be exactly 8 digits"
+                           title="<fmt:message key="user.profile.phone.error" />"
                            data-validate="phone"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
                     <div id="phoneNumber-error" class="text-red-500 text-sm mt-1 hidden"></div>
@@ -134,7 +134,7 @@
                         class="bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
                     <c:choose>
                         <c:when test="${adminView}">
-                            Update User
+                            <fmt:message key="user.profile.update.submit2" />
                         </c:when>
                         <c:otherwise>
                             <fmt:message key="user.profile.update.submit" />

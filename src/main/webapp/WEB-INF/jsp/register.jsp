@@ -11,16 +11,23 @@
     <div class="max-w-md mx-auto">
         <div class="bg-white rounded-lg shadow-md p-8">
 
-    <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">
-        <c:choose>
-            <c:when test="${adminRegister}">
-                <fmt:message key="admin.users.add" />
-            </c:when>
-            <c:otherwise>
-                <fmt:message key="register.title" />
-            </c:otherwise>
-        </c:choose>
-    </h1>
+            <!-- Back link for admin view -->
+            <c:if test="${adminView}">
+                <a href="/admin/users" class="inline-block mb-6 text-blue-600 hover:text-blue-800 font-medium">
+                    ← <fmt:message key="user.profile.back" />
+                </a>
+            </c:if>
+
+            <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">
+                <c:choose>
+                    <c:when test="${adminRegister}">
+                        <fmt:message key="admin.users.add" />
+                    </c:when>
+                    <c:otherwise>
+                        <fmt:message key="register.title" />
+                    </c:otherwise>
+                </c:choose>
+            </h1>
 
 
             <!-- Error Message -->
@@ -52,7 +59,7 @@
                            autofocus
                            data-validate="username"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           placeholder="Enter your username" />
+                           placeholder="<fmt:message key="register.placeholder.username" />" />
                     <div id="username-error" class="text-red-500 text-sm mt-1 hidden"></div>
                 </div>
 
@@ -67,7 +74,7 @@
                            required
                            data-validate="password"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           placeholder="Enter your password" />
+                           placeholder="<fmt:message key="register.placeholder.password" />" />
                     <div id="password-error" class="text-red-500 text-sm mt-1 hidden"></div>
                 </div>
 
@@ -82,7 +89,7 @@
                            required
                            data-validate="fullName"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           placeholder="Enter your full name" />
+                           placeholder="<fmt:message key="register.placeholder.fullName" />" />
                     <div id="fullName-error" class="text-red-500 text-sm mt-1 hidden"></div>
                 </div>
 
@@ -97,7 +104,7 @@
                            required
                            data-validate="email"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           placeholder="Enter your email" />
+                           placeholder="<fmt:message key="register.placeholder.email" />" />
                     <div id="email-error" class="text-red-500 text-sm mt-1 hidden"></div>
                 </div>
 
@@ -113,7 +120,7 @@
                            title="Phone must be exactly 8 digits"
                            data-validate="phone"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           placeholder="Enter 8-digit phone number" />
+                           placeholder="<fmt:message key="register.placeholder.phoneNumber" />" />
                     <div id="phone-error" class="text-red-500 text-sm mt-1 hidden"></div>
                 </div>
 
