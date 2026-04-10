@@ -133,8 +133,8 @@
                             name="role"
                             required
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="ROLE_STUDENT"><fmt:message key="register.roleStudent" /></option>
-                        <option value="ROLE_TEACHER"><fmt:message key="register.roleTeacher" /></option>
+<option value="student"><fmt:message key="register.roleStudent" /></option>
+<option value="teacher"><fmt:message key="register.roleTeacher" /></option>
                     </select>
                 </div>
 
