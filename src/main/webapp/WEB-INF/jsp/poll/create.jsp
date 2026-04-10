@@ -68,8 +68,9 @@
                     <input type="text"
                            id="option3"
                            name="option3"
+                           required
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           placeholder="Option 3 (optional)" />
+                           placeholder="Option 3" />
                 </div>
 
                 <div class="mb-4">
@@ -79,8 +80,9 @@
                     <input type="text"
                            id="option4"
                            name="option4"
+                           required
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           placeholder="Option 4 (optional)" />
+                           placeholder="Option 4" />
                 </div>
 
                 <div class="mb-4">
@@ -90,8 +92,9 @@
                     <input type="text"
                            id="option5"
                            name="option5"
+                           required
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           placeholder="Option 5 (optional)" />
+                           placeholder="Option 5" />
                 </div>
 
                 <!-- Close Time -->
