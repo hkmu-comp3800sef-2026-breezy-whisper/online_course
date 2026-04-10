@@ -155,10 +155,10 @@
             <!-- Login Link -->
             
             <c:if test="${empty adminRegister}">
-                <p class="text-center mt-6 text-gray-600">
-                    <fmt:message key="login.register" />
-                    <a href="/login" class="text-blue-600 hover:underline">
-                        <fmt:message key="login.title" />
+                <p class="text-sm text-gray-600 text-center mt-6">
+                    <fmt:message key="register.hasAccountPrompt"/>
+                    <a href="/login" class="text-blue-600 hover:text-blue-800 font-medium">
+                        <fmt:message key="register.loginHere"/>
                     </a>
                 </p>
             </c:if>
