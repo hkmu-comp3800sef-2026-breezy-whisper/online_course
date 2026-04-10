@@ -108,4 +108,14 @@ public class VoteRepositoryImpl extends AbstractRepositoryImpl implements IVoteR
                 .where(vote.poll.pollId.eq(pollId))
                 .execute();
     }
+
+    @Override
+    public List<Vote> findByUsername(String username) {
+        QVote vote = QVote.vote;
+        return queryFactory
+                .selectFrom(vote)
+                .join(vote.user, QUser.user)
+                .where(QUser.user.username.eq(username))
+                .fetch();
+    }
 }

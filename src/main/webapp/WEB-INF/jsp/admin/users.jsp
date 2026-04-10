@@ -103,6 +103,7 @@
                                     </c:choose>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <c:if test="${user.username != pageContext.request.userPrincipal.name}">
                                     <c:choose>
                                         <c:when test="${user.status == 0}">
                                             <form action="/admin/users/${user.username}/disable" method="post" class="inline">
@@ -121,15 +122,19 @@
                                             </form>
                                         </c:otherwise>
                                     </c:choose>
-                                </td>
+                                </c:if>
                                 <td  class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <form action="/admin/users/${user.username}/delete" method="post" class="inline">
-                                        <input type="hidden" name="_csrf" value="${_csrf.token}" />
-                                        <button type="submit" class="text-red-600 hover:text-red-900">
-                                            <fmt:message key="admin.users.delete" />
-                                        </button>
-                                    </form>
+                                    <c:if test="${user.username != pageContext.request.userPrincipal.name}">
+                                        <form action="/admin/users/${user.username}/delete" method="post" class="inline">
+                                            <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                                            <button type="submit" class="text-red-600 hover:text-red-900">
+                                                <fmt:message key="admin.users.delete" />
+                                            </button>
+                                        </form>
+                                    </c:if>
                                 </td>
+Note: Using ${principal.username} requires <sec:authentication property="name" var="principal" /> at top or use <sec:authentication property="name" /> directly in test.
+
                             </tr>
                         </c:forEach>
                     </c:otherwise>

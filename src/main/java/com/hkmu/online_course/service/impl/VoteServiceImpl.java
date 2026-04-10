@@ -48,7 +48,7 @@ public class VoteServiceImpl implements IVoteService {
         return voteRepo.findByPollIdAndUsername(pollId, username);
     }
 
-    @Override
+@Override
     @Transactional
     public void vote(String username, Long pollId, Integer selectedOption) {
         Poll poll = pollRepo.findById(pollId)
@@ -78,5 +78,11 @@ public class VoteServiceImpl implements IVoteService {
             Vote vote = new Vote(UUID.randomUUID().toString(), poll, user, selectedOption);
             voteRepo.save(vote);
         }
+    }
+
+    @Override
+    @Transactional
+    public void deleteByUsername(String username) {
+        voteRepo.findByUsername(username).forEach(vote -> voteRepo.deleteById(vote.getVoteId()));
     }
 }

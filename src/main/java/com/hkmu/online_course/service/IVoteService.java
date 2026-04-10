@@ -16,4 +16,6 @@ public interface IVoteService {
     Optional<Vote> findByPollIdAndUsername(Long pollId, String username);
 
     void vote(String username, Long pollId, Integer selectedOption);
+
+    void deleteByUsername(String username);
 }

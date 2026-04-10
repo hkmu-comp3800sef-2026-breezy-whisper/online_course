@@ -163,6 +163,9 @@ public class UserServiceImpl implements IUserService {
         // Delete user's comments
         commentService.findByUsername(username).forEach(c -> commentService.deleteById(c.getCommentId()));
 
+        // Delete user's votes
+        voteService.deleteByUsername(username);
+
         userRepo.deleteById(username);
     }
 }
