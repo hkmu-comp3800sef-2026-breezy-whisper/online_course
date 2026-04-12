@@ -142,7 +142,7 @@
                                         </form>
                                     </c:if>
                                 </td>
-Note: Using ${principal.username} requires <sec:authentication property="name" var="principal" /> at top or use <sec:authentication property="name" /> directly in test.
+
 
                             </tr>
                         </c:forEach>
