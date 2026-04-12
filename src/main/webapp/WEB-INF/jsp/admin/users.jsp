@@ -59,9 +59,18 @@
                         <c:forEach var="user" items="${users}">
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <a href="/admin/users/${user.username}/view" class="text-blue-600 hover:text-blue-900 hover:underline">
-                                        ${user.username}
-                                    </a>
+                                    <c:choose>
+                                        <c:when test="${user.username == pageContext.request.userPrincipal.name}">
+                                            <span class="text-gray-900">
+                                                ${user.username}
+                                            </span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <a href="/admin/users/${user.username}/view" class="text-blue-600 hover:text-blue-900 hover:underline">
+                                                ${user.username}
+                                            </a>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     ${user.fullName}
