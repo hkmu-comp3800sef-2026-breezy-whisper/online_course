@@ -36,6 +36,13 @@
                 </div>
             </c:if>
 
+            <!-- Error Message -->
+            <c:if test="${param.error != null}">
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                    <fmt:message key="user.profile.update.error" />: ${param.error}
+                </div>
+            </c:if>
+
             <c:choose>
                 <c:when test="${adminView}">
                     <form action='<c:url value="/admin/users/${targetUsername}/update"/>' method="post" data-validate>
@@ -46,19 +53,38 @@
             </c:choose>
                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
                 <c:if test="${adminView}">
-                    <input type="hidden" name="username" value="${targetUsername}"/>
+                    <input type="hidden" name="oldUsername" value="${targetUsername}"/>
                 </c:if>
 
-                <!-- Username (read-only) -->
+                <!-- Username (editable in admin view) -->
                 <div class="mb-4">
-                    <label for="username" class="block text-gray-700 font-medium mb-2">
-                        <fmt:message key="user.profile.username" />
-                    </label>
-                    <input type="text"
-                           id="username"
-                           value="${user.username}"
-                           readonly
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600" />
+                <label for="newUsername" class="block text-gray-700 font-medium mb-2">
+                    <fmt:message key="user.profile.username" />
+                </label>
+                <c:choose>
+                    <c:when test="${adminView}">
+                        <input type="text"
+                            id="newUsername"
+                            name="newUsername"
+                            pattern="^[A-Za-z][0-9A-Za-z_-]{0,31}$"
+                            title="<fmt:message key="user.username.pattern.error" />"
+                            data-validate="newUsername"
+                            value="${user.username}"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${newUsernameError != null ? 'border-red-500' : ''}" />
+                        <div id="newUsername-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <c:if test="${newUsernameError != null}">
+                            <div class="text-red-500 text-sm mt-1">${newUsernameError}</div>
+                        </c:if>
+                    </c:when>
+                    <c:otherwise>
+                        <input type="text"
+                            id="username"
+                            name="username"
+                            value="${user.username}"
+                            readonly
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600" />
+                    </c:otherwise>
+                </c:choose>
                 </div>
 
                 <!-- Full Name -->

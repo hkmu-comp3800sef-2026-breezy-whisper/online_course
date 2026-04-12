@@ -32,4 +32,7 @@ public interface IUserService {
     void enableUser(String username);
 
     User updateProfile(String username, String fullName, String email, String phoneNumber);
+
+    void changeUsername(String oldUsername, String newUsername);
 }
+

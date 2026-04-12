@@ -14,6 +14,8 @@ import com.hkmu.online_course.service.ICommentService;
 import com.hkmu.online_course.service.IVoteService;
 import com.hkmu.online_course.service.ILectureService;
 import com.hkmu.online_course.service.ICourseMaterialService;
+import com.hkmu.online_course.repository.ICommentRepository;
+import com.hkmu.online_course.repository.IVoteRepository;
 
 /**
  * Implementation of IUserService.
@@ -28,17 +30,22 @@ public class UserServiceImpl implements IUserService {
     private final IVoteService voteService;
     private final ILectureService lectureService;
     private final ICourseMaterialService courseMaterialService;
+    private final ICommentRepository commentRepo;
+    private final IVoteRepository voteRepo;
 
     @Autowired
     public UserServiceImpl(IUserRepository userRepo, PasswordEncoder passwordEncoder,
                           ICommentService commentService, IVoteService voteService,
-                          ILectureService lectureService, ICourseMaterialService courseMaterialService) {
+                          ILectureService lectureService, ICourseMaterialService courseMaterialService,
+                          ICommentRepository commentRepo, IVoteRepository voteRepo) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.commentService = commentService;
         this.voteService = voteService;
         this.lectureService = lectureService;
         this.courseMaterialService = courseMaterialService;
+        this.commentRepo = commentRepo;
+        this.voteRepo = voteRepo;
     }
 
     @Override
@@ -167,6 +174,49 @@ public class UserServiceImpl implements IUserService {
         voteService.deleteByUsername(username);
 
         userRepo.deleteById(username);
+    }
+
+    @Override
+    @Transactional
+    public void changeUsername(String oldUsername, String newUsername) {
+        if (oldUsername.equals(newUsername)) {
+            throw new IllegalArgumentException("New username must be different");
+        }
+
+        // Validate new username format (same as @Pattern)
+        if (!newUsername.matches("^[A-Za-z][0-9A-Za-z_-]{0,31}$")) {
+            throw new IllegalArgumentException("Invalid username format");
+        }
+
+        User oldUser = userRepo.findById(oldUsername)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + oldUsername));
+
+        if (userRepo.existsByUsername(newUsername)) {
+            throw new IllegalArgumentException("New username already exists");
+        }
+
+        // Create new user copying all fields
+        User newUser = new User(newUsername, oldUser.getFullName(), oldUser.getEmail(), 
+                                oldUser.getPhoneNumber(), oldUser.getPassword());
+        newUser.setRole(oldUser.getRole());
+        newUser.setStatus(oldUser.getStatus());
+        newUser.setDisabledReason(oldUser.getDisabledReason());
+        // Note: timestamps managed by Hibernate
+
+        userRepo.save(newUser);
+
+        // Transfer comments
+        commentService.findByUsername(oldUsername).stream()
+            .peek(comment -> comment.setUser(newUser))
+            .forEach(commentRepo::save);
+
+        // Transfer votes
+        voteService.findByUsername(oldUsername).stream()
+            .peek(vote -> vote.setUser(newUser))
+            .forEach(voteRepo::save);
+
+        // Delete old user
+        userRepo.deleteById(oldUsername);
     }
 }
 

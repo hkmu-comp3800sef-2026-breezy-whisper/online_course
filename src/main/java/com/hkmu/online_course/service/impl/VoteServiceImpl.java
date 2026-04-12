@@ -80,6 +80,11 @@ public class VoteServiceImpl implements IVoteService {
         }
     }
 
+@Override
+    public List<Vote> findByUsername(String username) {
+        return voteRepo.findByUsername(username);
+    }
+
     @Override
     @Transactional
     public void deleteByUsername(String username) {

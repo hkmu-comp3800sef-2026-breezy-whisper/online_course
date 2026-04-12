@@ -61,9 +61,22 @@ public class AdminController {
 
     @PostMapping("/users/{username}/update")
     @PreAuthorize("hasRole('TEACHER')")
-    public String updateUser(@PathVariable String username, String fullName, String email, String phoneNumber, Model model) {
-        userService.updateProfile(username, fullName, email, phoneNumber);
-        return "redirect:/admin/users/" + username + "/view?updated=true";
+    public String updateUser(@PathVariable String username,
+                            @RequestParam(required = false) String newUsername,
+                            String fullName, String email, String phoneNumber, 
+                            Model model) {
+        try {
+            if (newUsername != null && !newUsername.trim().isEmpty() && !newUsername.equals(username)) {
+                userService.changeUsername(username, newUsername);
+                return "redirect:/admin/users/" + newUsername + "/view?updated=true";
+            } else {
+                userService.updateProfile(username, fullName, email, phoneNumber);
+                return "redirect:/admin/users/" + username + "/view?updated=true";
+            }
+        } catch (IllegalArgumentException e) {
+            String errorMsg = e.getMessage();
+            return "redirect:/admin/users/" + username + "/view?error=" + java.net.URLEncoder.encode(errorMsg, java.nio.charset.StandardCharsets.UTF_8);
+        }
     }
 
 
